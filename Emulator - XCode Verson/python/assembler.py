@@ -2,6 +2,7 @@
 # get binKeys.h and set binary keys:
 binKeysStr = ''
 
+
 binKeys = {}
 
 with open("/Users/ericdiskin/code/code/c/Emulator - XCode Verson/Emulator - XCode Verson/binKeys.h", "r") as binKeysFile:
