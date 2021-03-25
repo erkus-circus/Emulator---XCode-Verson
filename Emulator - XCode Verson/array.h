@@ -2,15 +2,10 @@
 #define ARRAY_H_INCLUDED
 
 #include "function.h"
+#include "dataTypes.h"
 
-struct Vector
-{
-    union Value* arr;
-    int size;
-    int offset;
-};
 
-void v_set (struct Vector* vector, int index, union Value value)
+void v_set (struct Vector* vector, int index, struct Data value)
 {
     if (index + vector->offset >= vector->size) {
         vector->arr = realloc(vector->arr, vector->size * 2);
@@ -22,10 +17,10 @@ void v_init (struct Vector* vector)
 {
     vector->size = 8;
     vector->offset = 0;
-    vector->arr = malloc( vector->size * sizeof(union Value) );
+    vector->arr = malloc( vector->size * sizeof(struct Data) );
 }
 
-union Value v_get(struct Vector* vector, int index)
+struct Data v_get(struct Vector* vector, int index)
 {
     return vector->arr[index + vector->offset];
 }

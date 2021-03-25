@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "s_top:stack.h">
+         <PersistentStrings>
+            <PersistentString
+               value = "instructionsExecuted">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "main:main.c">
+      </ContextState>
+      <ContextState
+         contextName = "setFunctions:function.h">
+         <PersistentStrings>
+            <PersistentString
+               value = "constants">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "s_pop:stack.h">
+      </ContextState>
+      <ContextState
+         contextName = "s_push:stack.h">
+      </ContextState>
+      <ContextState
+         contextName = "call:runtime.h">
+         <PersistentStrings>
+            <PersistentString
+               value = "instructionsExecuted">
+            </PersistentString>
+            <PersistentString
+               value = "s_top(&amp;fn.stack)">
+            </PersistentString>
+            <PersistentString
+               value = "globalVars">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "free_data:data.h">
+      </ContextState>
+      <ContextState
+         contextName = "setConstants:constants.h">
+         <PersistentStrings>
+            <PersistentString
+               value = "constants">
+            </PersistentString>
+            <PersistentString
+               value = "constants[1].values[1]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>

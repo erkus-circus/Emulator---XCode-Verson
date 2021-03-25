@@ -86,38 +86,3 @@
 0x65 ; Char: 'e'
 0x2e ; Char: '.'
 CONST_END
-
-
-0x00 0x02 ; Two functions
-
-; F0
-FUN_HEAD
-0x00 0x00 ; zero arguments
-ZERO
-GS_0 ; store zero in var 0
-C_0
-CALL
-RET
-INSTR_END
-
-FUN_HEAD
-0x00 0x00
-C_4
-
-GL_0
-C_0
-IADD
-GS_0
-GL_0
-C_2
-GTE
-CALL
-C_3
-MVU
-INSTR_END
-FUN_HEAD
-0x00 0x00
-C_4
-PUT_CHARS
-
-INSTR_END

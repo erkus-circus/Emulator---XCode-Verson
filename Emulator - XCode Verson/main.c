@@ -1,7 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+// for sleep function
+#ifdef _WIN32
+#include <Windows.h>
+#else
+#include <unistd.h>
+#endif
 
 #include "constants.h"
 
@@ -13,7 +18,16 @@
 numBytesOFContants(int) : Constants  : numFunctions : Function0 { numParams : instructions } : Function1 { ... }
 */
 
-
+/*
+ Constants Structure:
+ # of constants
+ isByteConstant or intConstant? Boalean
+ # of bytes in this constant: (int)
+ 0x00 0x00 0x00 0x00 ...
+ # of byes in this constant: (int)
+ 0x00 0x00 0x00 0x00 ...
+ CONST_END
+ */
 
 
 // include is down here because otherwise constants is undefined in "BinKeys.h".
@@ -21,14 +35,19 @@ numBytesOFContants(int) : Constants  : numFunctions : Function0 { numParams : in
 #include "runtime.h"
 
 
+
 int main(int argc, char *argv[])
 {
     FILE * fp;
-
+    
+    // DEBUG ONLY: assemble assembly to bytecode, then run
+    system("python3 \"/Users/ericdiskin/code/code/c/Emulator - XCode Verson/Emulator - XCode Verson/python/assembler.py\"");
+    
+    
     // TODO: file:
     
     char* Fname = "out.emulate";
-
+    
     if ((fp = fopen(Fname,"rb")) == NULL)
     {
         printf("Error opening file");
@@ -44,20 +63,22 @@ int main(int argc, char *argv[])
     // Reading data to array of unsigned chars
     fp = fopen(Fname, "rb");
     unsigned char * in = (unsigned char *) malloc(size);
-    int bytes_read = fread(in, sizeof(unsigned char), size, fp);
+    unsigned long bytes_read = fread(in, sizeof(unsigned char), size, fp);
     fclose(fp);
 
-    // i should check if this is the correct number to malloc.
-    constants = malloc( ucharsToInt(in) * sizeof(union Value) );
-
-    int i = setConstants(in, constants);
+    // get the constants
+    int i = setConstants(in);
 
     //set the functions variable and return index of main
     setFunctions(in, i);
-
-    union Value res = call(functions[0]);
     
-    printf("Return Value: %i\n",res.intValue);
+    // should probably free in here.
+    
+    // init the global variable vector:
+    v_init(&globalVars);
+    
+    call(functions[0]);
+    
 
     return 0;
 }

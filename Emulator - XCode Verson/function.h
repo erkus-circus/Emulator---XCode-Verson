@@ -34,18 +34,25 @@ int ucharToShort(unsigned char* buf)
     return ucharsToInt(a);
 }
 
-
-
+int ucharFromByte(unsigned char* buf) {
+    unsigned char a[4] =
+    {
+        0, 0,
+        0, buf[0]
+    };
+    return ucharsToInt(a);
+}
 
 struct Function
 {
-    union Value* params;
+    struct Data* params;
     unsigned int paramCount;
 
     struct Vector varArr;
 
     unsigned int PC;
     unsigned int numIntructions;
+    
     unsigned char* intstructions;
 
     struct Stack stack;
@@ -59,7 +66,7 @@ int setFunctions(unsigned char* file, int i)
     // TODO: for the looping
     // TODO:
     int numFuncs;
-        numFuncs = ucharToShort(file + i);
+    numFuncs = ucharToShort(file + i);
 
     i += 2;
 
@@ -69,16 +76,14 @@ int setFunctions(unsigned char* file, int i)
     {
         i++;
         // get number of params:
-
         int numParams = ucharToShort(file + i);
 
         i += 2;
 
         // process instructions:
 
-
         int preInstr = i;
-        // loop till i is at the end then do the string substring thing to get the instructions (one bytene  each).
+        // loop till i is ucharsToIntt the string substring thing to get the instructions (one bytene  each).
         while(file[++i] != INSTR_END)
         {
         }
@@ -86,9 +91,9 @@ int setFunctions(unsigned char* file, int i)
 
         unsigned char* instructions;
 
-        unsigned int numInstructions = (i-preInstr+1);
+        unsigned int numInstructions = (i-preInstr);
 
-        instructions = (unsigned char*)malloc( numInstructions * sizeof(char) );
+        instructions = malloc( numInstructions * sizeof(unsigned char*) );
         // memcpy(instructions, file + preInstr + 1, (i - preInstr - 1) * sizeof(unsigned char) );
         memcpy(instructions, file + preInstr, i - preInstr + 1);
 

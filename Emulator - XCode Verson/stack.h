@@ -3,42 +3,33 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "constants.h"
 
-union Value
-{
-    int intValue;
-    // for debugging purposes:
-    char charValue;
-};
-
-struct Stack
-{
-    int size;
-    int index;
-
-    union Value* arr;
-};
+#include "dataTypes.h"
+#include "data.h"
 
 
-void s_push(struct Stack* stack, union Value value)
+void s_push(struct Stack* stack, struct Data data)
 {
 
     if (stack->index + 1 >= stack->size)
     {
         // double size of array
-        stack->arr = realloc(stack->arr, stack->size *= 2 * sizeof (union Value) );
+        stack->arr = realloc(stack->arr, stack->size *= 2 * sizeof (struct Data) );
     }
 
-    *(stack->arr + (++stack->index)) = value;
+    // push to the top of stack, 
+    *(stack->arr + (++stack->index)) = data;
 }
 
 void s_pop(struct Stack* stack)
 {
+    // what did this do???????? UGH WHY DIDNT I COMMENT BACK THEN
     // if (stack->index <= 0)
     //     return;
 
     // For testing, remove for efficiency.
-    stack->arr[stack->index].intValue = 0;
+    // free_data(&stack->arr[stack->index]);
     stack->index -= 1;
 }
 
@@ -46,7 +37,7 @@ void s_init(struct Stack* stack, int size)
 {
     stack->size = size;
     stack->index = -1;
-    stack->arr = malloc(size * sizeof(union Value) );
+    stack->arr = malloc(size * sizeof(struct Data) );
 }
 
 int s_empty (struct Stack* stack)
@@ -55,13 +46,16 @@ int s_empty (struct Stack* stack)
     return stack->index <= 0;
 }
 
-union Value s_top(struct Stack* stack)
+struct Data s_top(struct Stack* stack)
 {
     return stack->arr[stack->index];
 }
 
 void s_free(struct Stack* stack)
 {
+    for (int i = 0; i < stack->size; i++) {
+        free_data(&stack->arr[i]);
+    }
     free(stack->arr);
     stack->size = -1;
     stack->index = -1;
