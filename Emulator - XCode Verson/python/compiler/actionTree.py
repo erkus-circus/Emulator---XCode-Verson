@@ -18,9 +18,8 @@ from syntaxTree import Node, parseBody
 
 # Function is a thing that holds data about the function, like params, return value, and other things like that.
 class Function:
-    def __init__(self, paramTypes: list[str], paramNames: list[str], returnValue: str):
+    def __init__(self, paramTypes: list[str], returnValue: str):
         self.paramTypes = paramTypes
-        self.paramNames = paramNames
         self.returnValue = returnValue
 
 # functions is a list of function names, and each one can be found at the respective index
@@ -33,11 +32,11 @@ functions: list[str] = [
 # holds a list in parallel with functions
 functionData: list[Function] = [
     # main function:
-    Function([], [], None),
+    Function([], None),
     # print function:
-    Function(["string"], ["output"], None),
+    Function(["string"], None),
     # input function:
-    Function(["string"], ["query"], "string")
+    Function(["string"], "string")
 ]
 
 # a list of all the global variables
@@ -91,30 +90,79 @@ def parseConstants(node: Node):
 def parseFunctions(node: Node) -> None:
     # loop through to get all function definitions. No repeat functions for at least now.
     for i in node.children:
-        pass
+        if i.nodeName == "function":
+            paramTypes = []
+            if i.name in functions:
+                #error: function already defined
+                pass
+            for argument in i.arguments:
+                paramTypes.append(argument.type)
+            functions.append(i.name)
+            functionData.append(Function(paramTypes=paramTypes, returnValue=i.type))
+        parseFunctions(i)
 
 # parse a function call and converting its arguments
 def parseFunctionCalls():
     pass
 
+
+
 # parse a body for variable definitions. Make sure it is in the correct frame, might make a variable stack thing to do this
 # like stack of arrays of variables, then when one body ends its var array gets popped, but a new one appears
 # also check for duplicate variables and inconsistant typing when calling other functions. 
 # Do this part last, after constants and functions have been done.
-def parseBodies(node: Node) -> None:
-    pass
+
+class ScopeStack:
+    
+    def __init__(self) -> None:
+        self.scopes: list[list[Node]] = []
+
+    def addScope(self):
+        self.scopes.append([])
+    
+    def popScope(self):
+        self.scopes.pop()
+
+    def addVar(self, var):
+        self.scopes[-1].append(var)
+    
+    # check if a variable has already been defined
+    def isDefined(self, var: Node):
+        for i in self.scopes[-1]:
+            if var in i:
+                # error: already defined
+                print("Variable already defined!")
+                
+        
+
+
+scopes = ScopeStack()
+
+def parseVariables(node: Node) -> None:
+    for i in node.children:
+        if i.nodeName == "reference":
+            if not scopes.isDefined(i.name):
+                # error: variable not defined
+                pass
+            
+
+        elif i.nodeName == "varDeclaration":
+            pass
+
 
 if __name__ == "__main__":
-    input = """
-    func sayHi@returnValue (name@string) {
-        var output@string = "Hi " + name + "! You are: " + 15 + " Years old."; 
-        output = (12 + 14) - output;
+    inputs = """
+    func sayHi@null (name@string) {
+        var output@int = (12 + 14) - output;
         print(output);
     }
-    sayHi("Eric Diskin");
+    sayHi(("Eric Diskin" * 5) + " Is said 5 times." - (22));
     """
-    lexed = lex(input)
+    lexed = lex(inputs)
     ast = parseBody(lexed)
     ast.printAll()
     parseConstants(ast)
-    print(constants)
+    parseFunctions(ast)
+    print("Constants: ",constants)
+    print("Functions: ", functions)
+    

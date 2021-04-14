@@ -51,6 +51,8 @@ class Node:
         print(output)
         for i in range(len(self.children)):
             self.children[i].printAll(spaces + 6)
+        for i in range(len(self.arguments)):
+            self.arguments[i].printAll(spaces + 6)
 
 
 
@@ -412,6 +414,7 @@ def parseExpression(lexed: LexList, ending: str, skip=False) -> Node:
     
     # shunting yard algorithm
     # taken from wikipedia
+    # slightly edited to make it work here, changed a LITTLE bit of the logic i think
     output: list[Node] = []
     operatorStack: list[Node] = []
     queue: list[Node] = expressionTree.children
@@ -424,7 +427,7 @@ def parseExpression(lexed: LexList, ending: str, skip=False) -> Node:
     }
 
     for token in queue:
-        if token.nodeName == "int" or token.nodeName == "string" or token.nodeName == "reference":
+        if token.nodeName == "int" or token.nodeName == "string" or token.nodeName == "reference" or token.nodeName == "call":
             output.append(token)
         elif token.nodeName == "call":
             operatorStack.append(token)
@@ -440,9 +443,6 @@ def parseExpression(lexed: LexList, ending: str, skip=False) -> Node:
                 output.append(operatorStack[-1])
                 operatorStack.pop()
             if operatorStack[-1].nodeName == "openingParenthesis":
-                operatorStack.pop()
-            if operatorStack[-1].nodeName == "call":
-                output.append(operatorStack[-1])
                 operatorStack.pop()
     
     while operatorStack != []:
@@ -573,7 +573,7 @@ def parseReturn(lexed: LexList) -> Node:
 if __name__ == "__main__":
     toLex = """
     func sayHi@returnValue (name@string) {
-        var output@string = "Hi " + name + "! You are: " + 15 + " Years old."; 
+        var output@string = "Hello" + (15 + " Years old.") * (13+12); 
         print(output);
     }
     sayHi("Eric Diskin");
