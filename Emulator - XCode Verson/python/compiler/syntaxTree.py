@@ -1,10 +1,11 @@
+# https://stackoverflow.com/questions/33533148/how-do-i-type-hint-a-method-with-the-type-of-the-enclosing-class
+from __future__ import annotations
+
 """
 Parses the LexedList into a tree consisting of Nodes
 Eric Diskin
 3/22/21 Created, things copied from older projects from 2019
 """
-
-
 
 """
 
@@ -20,9 +21,9 @@ class Node:
         # the name of node: string, body, if, func declaration, like statements
         self.nodeName = name
         # children of the node, for bodys, and arguments
-        self.children = []
+        self.children: list[Node] = []
         # arguments, for parameters or arrays or if statements: Node, because arguments is its own list
-        self.arguments = []
+        self.arguments: list[Node] = []
         # the name of the node
         self.name = ""
 
@@ -32,6 +33,8 @@ class Node:
         # if the node (for variable declaration types) is initalized or not.
         ########## TODO HERE, varDeclaration now.
         self.initialized = False
+        # only is set to true if the variable is a constant, not something else
+        self.constant = False
 
         # the value of the node, for values like strings and numbers
         self.value = ""
@@ -273,7 +276,6 @@ def parseList(lexed: LexList, bracketType: Type) -> list[Node]:
         # check if type then value is correct
         if lexed.getType() == bracketType.name and bracketType.values[1] == lexed.getVal():
             # the end of the list has been found
-            print("List End, this is a breakpoint since cannot break on break statement")
             break
 
         if expectingComma:
@@ -294,7 +296,6 @@ def parseList(lexed: LexList, bracketType: Type) -> list[Node]:
         # check if type then value is correct before stepping up
         if lexed.getType() == bracketType.name and bracketType.values[1] == lexed.getVal():
             # the end of the list has been found
-            print("List End, this is a breakpoint since cannot break on break statement")
             break
 
         # step and skip to the next expression, because it did not end here yet
@@ -422,7 +423,7 @@ def parseNumber(lexed: LexList) -> Node:
     lexed.expect(Types.NUM)
 
     node = Node("int")
-    node.value = lexed.getVal()
+    node.value = int(lexed.getVal())
 
     # stops with lexed pointing to int
     return node
@@ -530,8 +531,8 @@ def parseReturn(lexed: LexList) -> Node:
 if __name__ == "__main__":
     toLex = """
     func sayHi@returnValue (name@string) {
-        var output@string = "Hi " + name + "!";
-        print(output)
+        var output@string = "Hi " + name + "! You are: " + 15 + " Years old."; 
+        print(output);
     }
     sayHi("Eric Diskin");
     """
