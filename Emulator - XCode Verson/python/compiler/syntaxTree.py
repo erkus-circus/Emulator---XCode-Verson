@@ -409,6 +409,48 @@ def parseExpression(lexed: LexList, ending: str, skip=False) -> Node:
 
     
     # ends pointing to ending param
+    # TODO: shunting yard algorithm here for the stack machine:
+    output: list[Node] = []
+    operatorStack: list[Node] = []
+    queue: list[Node] = expressionTree.children
+
+    operatorsPrecedence = {
+        "+": 2,
+        "-": 2,
+        "/": 3,
+        "*": 3
+    }
+
+    for token in queue:
+        if token.nodeName == "int" or token.nodeName == "string" or token.nodeName == "reference":
+            output.append(token)
+        elif token.nodeName == "call":
+            operatorStack.append(token)
+        elif token.nodeName == "operator":
+            # might be error here, but i think i can skip some of the logic here.
+            while len(operatorStack) > 0 and (operatorStack[-1].nodeName == "operator") and (operatorsPrecedence[operatorStack[-1].value] >= operatorsPrecedence[token.value]) and queue[-1].nodeName != "openingParenthesis":
+                output.append(operatorStack[-1])
+                operatorStack.pop()
+            ## stopped here
+            operatorStack.append(token)
+        elif token.nodeName == "openingParenthesis":
+            operatorStack.append(token)
+        elif token.nodeName == "closingParenthesis":
+            while operatorStack[-1].nodeName != "openingParenthesis":
+                output.append(operatorStack[-1])
+                operatorStack.pop()
+            if operatorStack[-1].nodeName == "openingParenthesis":
+                operatorStack.pop()
+            if operatorStack[-1].nodeName == "call":
+                output.append(operatorStack[-1])
+                operatorStack.pop()
+    
+    while operatorStack != []:
+        output.append(operatorStack[-1])
+        operatorStack.pop()
+
+
+    expressionTree.children = output
     return expressionTree
 
 def parseIf(lexed:LexList) -> Node:

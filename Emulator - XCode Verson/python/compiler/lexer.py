@@ -66,13 +66,6 @@ class LexList:
             print(self.vals[i] + ": " + self.types[i])
     
 
-    # not sure
-    def getVals(self, sep=":") -> list[str]:
-        retVal = []
-        for i in range(self.length):
-            retVal.append(self.types[i] + sep + self.vals[i])
-        return retVal
-
     # checks if you are able to retrieve a token
     def canRetrieve(self) -> bool:
         return self.index < self.length

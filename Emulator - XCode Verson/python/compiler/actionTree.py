@@ -8,15 +8,36 @@ After this step is code generation, which takes the action tree and turns it int
 After that the assembly is compiled into bytecode which is then able to be run by my stack machine, and the language is finished
 """
 
+# am i cutting corners making this? it will work but will it actually work in the long run? Oh well i can always remake it
+# as long as i comment enough.
+
 from lexer import lex
 from syntaxTree import Node, parseBody
 
 
+
+# Function is a thing that holds data about the function, like params, return value, and other things like that.
+class Function:
+    def __init__(self, paramTypes: list[str], paramNames: list[str], returnValue: str):
+        self.paramsTypes = paramsTypes
+        self.paramNames = paramNames
+        self.returnValue = returnValue
+
 # functions is a list of function names, and each one can be found at the respective index
 # all the builtin functions can be added later to the start or end. To start i will add print and input functions:
 functions: list[str] = [
+    "main",
     "print",
     "input"
+]
+# holds a list in parallel with functions
+functionData: list[Function] = [
+    # main function:
+    Function([], [], None),
+    # print function:
+    Function(["string"], ["output"], None),
+    # input function:
+    Function(["string"], ["query"], "string")
 ]
 
 # a list of all the global variables
@@ -68,11 +89,14 @@ def parseConstants(node: Node):
 # include return type and all that stuff somehow in maybe a different list of functions or something
 # or functions list is actually a class that contains the data about the function: (argument types, return value...)
 def parseFunctions(node: Node) -> None:
-    pass
+    # loop through to get all function definitions. No repeat functions for at least now.
+    for i in node.children:
+        pass
 
 # shunting yard algorithm.
 def infixToRevPolish(node: Node) -> None:
-    pass
+    for i in node.children:
+        pass
 
 
 # parse a function call and converting its arguments
@@ -90,6 +114,7 @@ if __name__ == "__main__":
     input = """
     func sayHi@returnValue (name@string) {
         var output@string = "Hi " + name + "! You are: " + 15 + " Years old."; 
+        output = (12 + 14) - output;
         print(output);
     }
     sayHi("Eric Diskin");
