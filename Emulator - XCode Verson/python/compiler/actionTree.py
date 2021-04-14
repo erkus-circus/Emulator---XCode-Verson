@@ -19,7 +19,7 @@ from syntaxTree import Node, parseBody
 # Function is a thing that holds data about the function, like params, return value, and other things like that.
 class Function:
     def __init__(self, paramTypes: list[str], paramNames: list[str], returnValue: str):
-        self.paramsTypes = paramsTypes
+        self.paramTypes = paramTypes
         self.paramNames = paramNames
         self.returnValue = returnValue
 
@@ -92,12 +92,6 @@ def parseFunctions(node: Node) -> None:
     # loop through to get all function definitions. No repeat functions for at least now.
     for i in node.children:
         pass
-
-# shunting yard algorithm.
-def infixToRevPolish(node: Node) -> None:
-    for i in node.children:
-        pass
-
 
 # parse a function call and converting its arguments
 def parseFunctionCalls():

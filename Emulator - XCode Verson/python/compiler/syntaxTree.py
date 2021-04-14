@@ -409,7 +409,9 @@ def parseExpression(lexed: LexList, ending: str, skip=False) -> Node:
 
     
     # ends pointing to ending param
-    # TODO: shunting yard algorithm here for the stack machine:
+    
+    # shunting yard algorithm
+    # taken from wikipedia
     output: list[Node] = []
     operatorStack: list[Node] = []
     queue: list[Node] = expressionTree.children
@@ -427,11 +429,9 @@ def parseExpression(lexed: LexList, ending: str, skip=False) -> Node:
         elif token.nodeName == "call":
             operatorStack.append(token)
         elif token.nodeName == "operator":
-            # might be error here, but i think i can skip some of the logic here.
             while len(operatorStack) > 0 and (operatorStack[-1].nodeName == "operator") and (operatorsPrecedence[operatorStack[-1].value] >= operatorsPrecedence[token.value]) and queue[-1].nodeName != "openingParenthesis":
                 output.append(operatorStack[-1])
                 operatorStack.pop()
-            ## stopped here
             operatorStack.append(token)
         elif token.nodeName == "openingParenthesis":
             operatorStack.append(token)
