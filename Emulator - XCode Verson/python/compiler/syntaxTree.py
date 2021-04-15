@@ -572,11 +572,12 @@ def parseReturn(lexed: LexList) -> Node:
 
 if __name__ == "__main__":
     toLex = """
-    func sayHi@returnValue (name@string) {
-        var output@string = "Hello" + (15 + " Years old.") * (13+12); 
-        print(output);
-    }
-    sayHi("Eric Diskin");
+    var name@string = "Eric Diskin";
+    var girlfriendsName@string = "Erica Fischman";
+    var sistersName@string = "Ilana Diskin";
+    var juliasName@string = "Julia Diskin";
+    var lastName@string = "Diskin";
+    var fullName@string = "Eric " + "Anthony" + lastName;
     """
     lexed = lex(toLex)
     parsed = parseBody(lexed)

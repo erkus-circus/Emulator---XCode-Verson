@@ -132,8 +132,7 @@ class ScopeStack:
             if var in i:
                 # error: already defined
                 print("Variable already defined!")
-                
-        
+
 
 
 scopes = ScopeStack()

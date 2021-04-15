@@ -183,37 +183,6 @@ def getCharType(char: str) -> Type:
 if __name__ == "__main__":
     # an example program that i should use for reference when making the syntax tree and parsing through the LexList
     l = lex("""
-    ^ primitive Data type, used in emulator
-    interface DataSegment {
-        func DSET (data@DataSegment, index@int, value@DataSegment);
-        func DGET (data@DataSegment, index@int);
-        func DCPY (destination@DataSegment, source@DataSegment);
-
-
-        extern var totalDataSegments;
-        ^ extern means that it is not allocated to the variable, but it is like static var in class in c++
-
-        var length@int;
-
-        var values@array;
-        ^ values = array of ints
-    }
-
-    class array extends DataSegment {
-    }
-
-    class Person {
-        var name@string;
-        var age@int;
-        var familyMembers@array<string>;
-
-        func construct(n@string, a@int, familyMembersList@array<string>) {
-            this.name = n;
-            this.age = a;
-            this.familyMembers = familyMembersList;
-        }
-    }
-
     func sayHi@string (name@string, age@int) {
         var message@string = "Hi " + name + ". You are " + string(age) + " years old";
         print(message);
