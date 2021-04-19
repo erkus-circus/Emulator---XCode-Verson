@@ -38,9 +38,6 @@ def bytesFromNumber(number: int):
     n = 2
 
     return "0x" + ' 0x'.join([hexString[i:i+n] for i in range(0, len(hexString), n)])
-
-with open("./data.txt", "r") as f:
-    text = f.read()
   
 
 def formatNumber(line):
@@ -76,23 +73,32 @@ def formatString(line):
   
   return out
 
-output = ""
+
 numberLines = 0
 
-for i in text.splitlines():
-    i = i.replace('\\n', '\n').replace('\\t', '\t')
-    if i[0] == ";":
-      continue
-    if i[0] == "S":
-        numberLines += 1
-        output += formatString(i)
-    else:
-        numberLines += 1
-        output += formatNumber(i)
-output += "CONST_END\n"
+def createData(text):
+  global numberLines
+  output = ""
+  for i in text.splitlines():
+      i = i.replace('\\n', '\n').replace('\\t', '\t')
+      if i[0] == ";":
+        continue
+      if i[0] == "S":
+          numberLines += 1
+          output += formatString(i)
+      else:
+          numberLines += 1
+          output += formatNumber(i)
+  output += "CONST_END\n"
 
-output = str(bytesFromNumber(numberLines)) + ' ; ' + str(numberLines) + ' Constants:\n' + output
+  output = str(bytesFromNumber(numberLines)) + ' ; ' + str(numberLines) + ' Constants:\n' + output
+  return output
 
-with open("outputData.txt", 'w') as fo:
-    fo.write(''.join(output))
-print("Size of Data: ", len(output))
+if __name__ == "__main__":
+    with open("./data.txt", "r") as f:
+        text = f.read()
+      
+    output = ''.join(createData(text))
+    with open("outputData.txt", 'w') as fo:
+        fo.write(output)
+    print("Size of Data: ", len(output))

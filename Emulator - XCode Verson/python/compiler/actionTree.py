@@ -25,6 +25,7 @@ class Function:
 # functions is a list of function names, and each one can be found at the respective index
 # all the builtin functions can be added later to the start or end. To start i will add print and input functions:
 functions: list[str] = [
+    0,
     "print",
     "input"
 ]
@@ -97,11 +98,20 @@ def parseFunctions(node: Node) -> None:
                 # error: function already defined
                 print("already defined function")
                 pass
+            elif i.name == "main":
+                # the main function, treat this special
+                functions[0] = "main"
+            else:
+                functions.append(i.name)
             for argument in i.arguments:
                 paramTypes.append(argument.type)
-            functions.append(i.name)
-            functionData.append(
-                Function(paramTypes=paramTypes, returnValue=i.type))
+            # treat this main function special too
+            if not i.name == "main":
+                functionData.append(
+                    Function(paramTypes=paramTypes, returnValue=i.type))
+            else:
+                # here is for the main function
+                functionData[0] = Function(paramTypes=paramTypes, returnValue=i.type)
             # give the function an index
             i.name = len(functions) - 1
         # parse a call node 
@@ -113,11 +123,6 @@ def parseFunctions(node: Node) -> None:
         parseFunctions(i)
 
 
-# parse a function call and converting its arguments
-
-
-def parseFunctionCalls():
-    pass
 
 
 # parse a body for variable definitions. Make sure it is in the correct frame, might make a variable stack thing to do this
@@ -179,8 +184,26 @@ def parseVariables(node: Node):
                 # error already defined:
                 print("ALREADY DEFINED")
             
+            # makeshift fix, works but i should not need to add this here.
+            if type(i.name) == int:
+                continue
             placeholderName = i.name
-            i.name = len(variables) - 1
+            i.name = len(variables)
+            variables.append(placeholderName)
+        parseVariables(i)
+    
+    # do the same but with arguments.
+    for i in node.arguments:
+        if i.nodeName == "varDeclaration":
+            if i.name in variables:
+                # error already defined:
+                print("ALREADY DEFINED")
+            
+            # makeshift fix, works but i should not need to add this here.
+            if type(i.name) == int:
+                continue
+            placeholderName = i.name
+            i.name = len(variables)
             variables.append(placeholderName)
         parseVariables(i)
 
@@ -198,7 +221,7 @@ def parseVariables(node: Node):
 
 if __name__ == "__main__":
     inputs = """
-    func main@int (param@void) {
+    func main@int ( unknown@void) {
         var zero@int = 0;
         var one@int = 1;
         var two@int = 2;
