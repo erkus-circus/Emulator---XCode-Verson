@@ -30,7 +30,7 @@ class LexList:
         # TODO: this
         pass
     
-    def expect(self, *types:Type):
+    def expect(self, *types: Type):
         typeFound = False
         for i in types:
             if self.getType() == i.name:
@@ -38,7 +38,8 @@ class LexList:
                 break
         if not typeFound:
             #error
-            print("An Error occured")
+            print("An Error occured", i.name, self.index)
+
 
     def getType(self) -> str:
         return self.types[self.index] if self.canRetrieve() else "EOF"

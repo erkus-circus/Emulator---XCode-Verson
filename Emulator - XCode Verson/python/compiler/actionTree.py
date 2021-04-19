@@ -25,7 +25,6 @@ class Function:
 # functions is a list of function names, and each one can be found at the respective index
 # all the builtin functions can be added later to the start or end. To start i will add print and input functions:
 functions: list[str] = [
-    "main",
     "print",
     "input"
 ]
@@ -96,13 +95,23 @@ def parseFunctions(node: Node) -> None:
             paramTypes = []
             if i.name in functions:
                 # error: function already defined
+                print("already defined function")
                 pass
             for argument in i.arguments:
                 paramTypes.append(argument.type)
             functions.append(i.name)
             functionData.append(
                 Function(paramTypes=paramTypes, returnValue=i.type))
+            # give the function an index
+            i.name = len(functions) - 1
+        # parse a call node 
+        elif i.nodeName == "call":
+            if not i.name in functions:
+                print("undefined function call")
+            else:
+                i.name = functions.index(i.name)
         parseFunctions(i)
+
 
 # parse a function call and converting its arguments
 
@@ -160,16 +169,19 @@ anything after this is prob half-assed
 variables: list[str] = []
 
 
+
+#### varDeclaration if is being executed when it should not be. I dont know why. I am gojing to reboot the server right now to maybe get python stuff.
 def parseVariables(node: Node):
     # do variable declarations first, then references after because otherwise it does not work.
     for i in node.children:
         if i.nodeName == "varDeclaration":
             if i.name in variables:
                 # error already defined:
-                pass
-            name = i.name
-            i.name = len(variables)
-            variables.append(name)
+                print("ALREADY DEFINED")
+            
+            placeholderName = i.name
+            i.name = len(variables) - 1
+            variables.append(placeholderName)
         parseVariables(i)
 
     for i in node.children:
@@ -177,27 +189,30 @@ def parseVariables(node: Node):
             # variable name is a number when it should be a string.
             if not i.name in variables:
                 # error not defined
+                print("NOT DEFINED!")
                 pass
             else:
                 i.nodeName = "variableReference"
                 i.name = variables.index(i.name)
         parseVariables(i)
 
-
 if __name__ == "__main__":
     inputs = """
-    var name@string = "Eric Diskin";
-    var girlfriendsName@string = "Erica Fischman";
-    var sistersName@string = "Ilana Diskin";
-    var juliasName@string = "Julia Diskin";
-    var lastName@string = "Diskin";
-    var fullName@string = "Eric " + "Anthony" + lastName;
+    func main@int (param@void) {
+        var zero@int = 0;
+        var one@int = 1;
+        var two@int = 2;
+        var three@int = 3;
+        var four@int = 4;
+    }
+    main(1000);
     """
     lexed = lex(inputs)
     ast = parseBody(lexed)
     parseConstants(ast)
-    parseFunctions(ast)
     parseVariables(ast)
+    parseFunctions(ast)
     ast.printAll()
     print("Constants: ", constants)
     print("Functions: ", functions)
+    print("Variables: ", variables)

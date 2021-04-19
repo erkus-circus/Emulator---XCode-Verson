@@ -58,7 +58,7 @@ class Node:
 
 # for better printing of printAll, only include if the value != "" or None
 def getIfValue(prefix: str, value) -> str:
-    if value == "" or value == False:
+    if value == "" or value == False and not type(value) == int:
         return ""
     else:
         return prefix + str(value) + " "
@@ -580,6 +580,17 @@ if __name__ == "__main__":
     }
     sayHi(("Eric Diskin" * 5) + " Is said 5 times." - (22));
     """
-    lexed = lex(toLex)
+
+    otherToLex = """
+    func main@int (param@int) {
+        var zero@int = 0;
+        var one@int = 1;
+        var two@int = 2;
+        var three@int = 3;
+        var four@int = 4;
+    }
+
+    """
+    lexed = lex(otherToLex)
     parsed = parseBody(lexed)
     parsed.printAll()
