@@ -1,5 +1,6 @@
 # https://stackoverflow.com/questions/33533148/how-do-i-type-hint-a-method-with-the-type-of-the-enclosing-class
 from __future__ import annotations
+from lexer import LexList, Type, Types, lex
 
 """
 Parses the LexedList into a tree consisting of Nodes
@@ -12,8 +13,6 @@ Eric Diskin
 Each Parse function takes in at least a lexedList and returns a Node
 
 """
-
-from lexer import LexList, Type, Types, lex
 
 
 class Node:
@@ -31,7 +30,7 @@ class Node:
         self.type = ""
 
         # if the node (for variable declaration types) is initalized or not.
-        ########## TODO HERE, varDeclaration now.
+        # TODO HERE, varDeclaration now.
         self.initialized = False
         # only is set to true if the variable is a constant, not something else
         self.constant = False
@@ -39,8 +38,8 @@ class Node:
         # the value of the node, for values like strings and numbers
         self.value = ""
 
-    
     # print all children and itself
+
     def printAll(self, spaces=0):
         output = spaces * ' '
         output += getIfValue("NODETYPE: ", self.nodeName)
@@ -52,8 +51,9 @@ class Node:
         for i in range(len(self.children)):
             self.children[i].printAll(spaces + 6)
         for i in range(len(self.arguments)):
-            self.arguments[i].printAll(spaces + 6)
-
+            if i < 1:
+                print('\n\n')
+            self.arguments[i].printAll(spaces + 4)
 
 
 # for better printing of printAll, only include if the value != "" or None
@@ -64,8 +64,10 @@ def getIfValue(prefix: str, value) -> str:
         return prefix + str(value) + " "
 
 # parse a body
+
+
 def parseBody(lexed: LexList, end="EOF") -> Node:
-    ## EXPECTS to have lexed on token before the first statement.
+    # EXPECTS to have lexed on token before the first statement.
     # init a body node
     tree = Node("Body")
     # lexed.index starts at -1 so taking it to 0 for the first index
@@ -73,7 +75,7 @@ def parseBody(lexed: LexList, end="EOF") -> Node:
     # end is either EOF or } or something similar.
     while lexed.canRetrieve() and lexed.getVal() != end:
         # always skip space
-        
+
         lexed.skipSpace()
         # expect only ID's and STATEMENTS
         if lexed.getVal() == end:
@@ -96,7 +98,6 @@ def parseBody(lexed: LexList, end="EOF") -> Node:
                 # parse a return statement
                 tree.children.append(parseReturn(lexed))
 
-
         elif lexed.getType() == "ID":
             # lexed index is pointing on top of ID
             tree.children.append(parseID(lexed))
@@ -104,21 +105,23 @@ def parseBody(lexed: LexList, end="EOF") -> Node:
             lexed.expect(Types.SEMICOL)
             # step past the semicolon
             lexed.stepUp()
-        else: 
+        else:
             # error
             pass
-        
+
         # stepUp
         lexed.stepUp()
     return tree
 
 # parse a thing like var name@type;
 # isArgument tells this if the thing being parsed is an argument or a variable declaration
+
+
 def parseVarDeclaration(lexed: LexList, isArgument=False) -> Node:
 
     # return value:
     varDeclarationNode = Node("varDeclaration")
-    
+
     # starts pointintg lexed on top of the STATEMENT, or a COMMA. maybe: parenthesis for opening function declarations
     lexed.expect(Types.STATEMENT, Types.COMMA, Types.PARENTH)
 
@@ -148,17 +151,17 @@ def parseVarDeclaration(lexed: LexList, isArgument=False) -> Node:
     # end here if it is a semicolon or a comma(argument) or a ) (argument)
     if lexed.getType() == "SEMICOL" or ((lexed.getType() == "COMMA" or lexed.getVal() == ")") and isArgument):
         return varDeclarationNode
-    
+
     # else, parse it as an expression
     varDeclarationNode.initialized = True
-    varDeclarationNode.children = [parseExpression(lexed, ")," if isArgument else ";")]
+    varDeclarationNode.children = [
+        parseExpression(lexed, ")," if isArgument else ";")]
 
     # expect the line to end with a semicolon, then return back.
     if not isArgument:
         lexed.expect(Types.SEMICOL)
 
     return varDeclarationNode
-
 
 
 # parse an ID into a function call or an assignment
@@ -198,7 +201,7 @@ def parseID(lexed: LexList) -> Node:
         lexed.skipSpace(True)
         referenceNode = Node("reference")
         referenceNode.name = lexed.getVal()
-        
+
         return referenceNode
 
     # TODO: return a Node
@@ -235,7 +238,7 @@ def parseAssignment(lexed: LexList) -> Node:
 
     # expect a = sign
     lexed.expect(Types.EQUALS)
-    
+
     # down and stepDown the space to get the name
     lexed.stepDown()
     # skip space downwards
@@ -257,15 +260,14 @@ def parseAssignment(lexed: LexList) -> Node:
     return assignmentTree
 
 
-
 # parse a list, like for passing arguments, or arrays.
-# bracketType: 
+# bracketType:
 def parseList(lexed: LexList, bracketType: Type) -> list[Node]:
     parsedList: Node = Node("list")
     # expect a [ or ( or somethign else similar
     lexed.expect(bracketType)
     # expecting a comma, like after an id or actual value is passed in
-    expectingComma = False  
+    expectingComma = False
 
     # skip the bracketType token, to the start of the expression
     # lexed.stepUp()
@@ -284,16 +286,16 @@ def parseList(lexed: LexList, bracketType: Type) -> list[Node]:
             # where lexed.index is pointing should be a comma.
             lexed.expect(Types.COMMA)
 
-
-        # assume that the type's values have the following format: '()', '[]', '{}'. 
+        # assume that the type's values have the following format: '()', '[]', '{}'.
         # add comma because the expression could break at bracketType or at an actual comma.
         # parseExpression wants to be positioned at the start of the expression
-        parsedList.children.append(parseExpression(lexed, bracketType.values[1] + ',', skip=skipFirst))
-        
+        parsedList.children.append(parseExpression(
+            lexed, bracketType.values[1] + ',', skip=skipFirst))
+
         # now that the first loop ran, all the others must skip the commas at the start
         skipFirst = True
         # after one expression expect a comma, or the ending
-        expectingComma = True 
+        expectingComma = True
 
         # check if type then value is correct before stepping up
         if lexed.getType() == bracketType.name and bracketType.values[1] == lexed.getVal():
@@ -308,16 +310,15 @@ def parseList(lexed: LexList, bracketType: Type) -> list[Node]:
     return parsedList
 
 
-# for parsing the arguments 
+# for parsing the arguments
 def parseArguments(lexed: LexList) -> Node:
     # expect (
     lexed.expect(Types.PARENTH)
 
 
-
 # ending is when to expect the ending of the expression, ie. ) or , or ;
 # expectingOperator is if expecting an operator after an ID or const
-def parseExpression(lexed: LexList, ending: str, skip=False) -> Node:  
+def parseExpression(lexed: LexList, ending: str, skip=False) -> Node:
 
     expressionTree = Node("expression")
 
@@ -340,7 +341,6 @@ def parseExpression(lexed: LexList, ending: str, skip=False) -> Node:
                 # error, cannot end an expression with like: (a + b =) or (b=c%)
                 pass
             break
-        
 
         if expectingOperator:
             # expect an operator, or a parenthesis
@@ -388,20 +388,19 @@ def parseExpression(lexed: LexList, ending: str, skip=False) -> Node:
                 lexed.stepDown()
             # all should be good after here
 
-
         elif lexed.getType() == "ID":
             expressionTree.children.append(parseID(lexed))
             # in an expression following a symbol you need an operator
             expectingOperator = True
             # what does this leave lexed pointing to?
-        
+
         elif lexed.getType() == "STRSEP":
             # parse a string
             expressionTree.children.append(parseString(lexed))
             # in an expression following a symbol you need an operator
             expectingOperator = True
             # leaves lexed on top of last STRSEP token
-        
+
         elif lexed.getType() == "NUM":
             # parse a number
             expressionTree.children.append(parseNumber(lexed))
@@ -409,9 +408,8 @@ def parseExpression(lexed: LexList, ending: str, skip=False) -> Node:
             expectingOperator = True
             # leaves lexed on top of NUM token
 
-    
     # ends pointing to ending param
-    
+
     # shunting yard algorithm
     # taken from wikipedia
     # slightly edited to make it work here, changed a LITTLE bit of the logic i think
@@ -444,20 +442,21 @@ def parseExpression(lexed: LexList, ending: str, skip=False) -> Node:
                 operatorStack.pop()
             if operatorStack[-1].nodeName == "openingParenthesis":
                 operatorStack.pop()
-    
+
     while operatorStack != []:
         output.append(operatorStack[-1])
         operatorStack.pop()
 
-
     expressionTree.children = output
     return expressionTree
 
-def parseIf(lexed:LexList) -> Node:
+
+def parseIf(lexed: LexList) -> Node:
     pass
 
+
 def parseNumber(lexed: LexList) -> Node:
-    # floats are not yet supported. I should support them eventually i will probably 
+    # floats are not yet supported. I should support them eventually i will probably
     # give them their own special stack or something
     number = ""
 
@@ -470,8 +469,9 @@ def parseNumber(lexed: LexList) -> Node:
     # stops with lexed pointing to int
     return node
 
+
 def parseString(lexed: LexList) -> Node:
-    #expects lexed to point on top of first "
+    # expects lexed to point on top of first "
     lexed.expect(Types.STRSEP)
     # to check if the current string is terminated or not. ie \n \t
     terminated = False
@@ -486,12 +486,12 @@ def parseString(lexed: LexList) -> Node:
         if lexed.getType() == "SPACE" and not terminated:
             # this could have more space
             if '\n' in chars:
-                #error
+                # error
                 pass
-            
+
         if terminated:
             output += chars
-        
+
         elif lexed.getVal() == "\\":
             # an escape sequence
             terminated = True
@@ -510,9 +510,11 @@ def parseString(lexed: LexList) -> Node:
     return node
 
 # TODO: maybe add anonymous functions to language. Not for now because that is a lot of work.
+
+
 def parseFunctionDeclaration(lexed: LexList) -> Node:
     functionNode = Node("function")
-    # starts with func keyword on top, then parses arguments (parseVarDeclaration on while loop??), then gets children as parseBody, then returns.    
+    # starts with func keyword on top, then parses arguments (parseVarDeclaration on while loop??), then gets children as parseBody, then returns.
     lexed.expect(Types.STATEMENT)
     lexed.stepUp()
     lexed.skipSpace()
@@ -544,10 +546,10 @@ def parseFunctionDeclaration(lexed: LexList) -> Node:
     # this while loop gets all the arguments.
     while lexed.getVal() != ')' and lexed.canRetrieve():
         functionNode.arguments.append(parseVarDeclaration(lexed, True))
-    
+
     # expect the ending parenthesis
     lexed.expect(Types.PARENTH)
-    
+
     # now expect the { symbol
     lexed.stepUp()
     lexed.skipSpace()
@@ -560,7 +562,7 @@ def parseFunctionDeclaration(lexed: LexList) -> Node:
 
     return functionNode
 
-    
+
 def parseReturn(lexed: LexList) -> Node:
     returnNode = Node("return")
 
@@ -571,13 +573,12 @@ def parseReturn(lexed: LexList) -> Node:
 
 
 if __name__ == "__main__":
-    toLex = """
-    var name@string = "Eric Diskin";
-    var girlfriendsName@string = "Erica Fischman";
-    var sistersName@string = "Ilana Diskin";
-    var juliasName@string = "Julia Diskin";
-    var lastName@string = "Diskin";
-    var fullName@string = "Eric " + "Anthony" + lastName;
+    toLex = """ 
+    func sayHi@null (name@string) {
+        var output@int = (12 + 14) - output;
+        print(output);
+    }
+    sayHi(("Eric Diskin" * 5) + " Is said 5 times." - (22));
     """
     lexed = lex(toLex)
     parsed = parseBody(lexed)
