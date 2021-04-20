@@ -29,6 +29,9 @@ class Node:
         # the type of the node (for functions and variable declarations and other things like that)
         self.type = ""
 
+        # for builtin functions
+        self.special = False
+
         # if the node (for variable declaration types) is initalized or not.
         # TODO HERE, varDeclaration now.
         self.initialized = False

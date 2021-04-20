@@ -17,31 +17,36 @@ from syntaxTree import Node, parseBody
 
 # Function is a thing that holds data about the function, like params, return value, and other things like that.
 class Function:
-    def __init__(self, paramTypes: list[str], returnValue: str):
+    def __init__(self, paramTypes: list[str], returnValue: str, assembly: str=""):
         self.paramTypes = paramTypes
+        
+        # assembly is for special functions
+        self.assembly = assembly
         self.returnValue = returnValue
 
 
 # functions is a list of function names, and each one can be found at the respective index
 # all the builtin functions can be added later to the start or end. To start i will add print and input functions:
 functions: list[str] = [
-    0,
-    "print",
-    "input"
+    0
 ]
 # holds a list in parallel with functions
 functionData: list[Function] = [
     # main function:
-    Function([], None),
-    # print function:
-    Function(["string"], None),
-    # input function:
-    Function(["string"], "string")
+    Function([], None)
 ]
 
-# a list of all the global variables
-globalVars: list[str] = [
+# special functions, builtin ones.
+specialFunctionData: list[Function] = [
+    # print function:
+    Function(["string"], None, assembly="PUT_CHARS"),
+    # input function:
+    Function(["string"], "string", assembly="GET_CHARS")
+]
 
+specialFunctions = [
+    "print",
+    "input"
 ]
 
 # constants is the list of all of the constants in the program. at the end it can generate from the constants generator or something.
@@ -102,27 +107,34 @@ def parseFunctions(node: Node) -> None:
                 # the main function, treat this special
                 functions[0] = "main"
             else:
-                functions.append(i.name)
+                functions.insert(1, i.name)
+                
             for argument in i.arguments:
                 paramTypes.append(argument.type)
+
             # treat this main function special too
             if not i.name == "main":
-                functionData.append(
+                # insert to put it after main but before the builtin functions.
+                functionData.insert(1,
                     Function(paramTypes=paramTypes, returnValue=i.type))
+
             else:
                 # here is for the main function
-                functionData[0] = Function(paramTypes=paramTypes, returnValue=i.type)
+                functionData[0] = Function(
+                    paramTypes=paramTypes, returnValue=i.type)
             # give the function an index
             i.name = len(functions) - 1
-        # parse a call node 
+        # parse a call node
         elif i.nodeName == "call":
-            if not i.name in functions:
+            if not i.name in functions and not i.name in specialFunctions:
                 print("undefined function call")
+            elif i.name in specialFunctions:
+                # this is a special function
+                i.name = specialFunctions.index(i.name)
+                i.special = True
             else:
                 i.name = functions.index(i.name)
         parseFunctions(i)
-
-
 
 
 # parse a body for variable definitions. Make sure it is in the correct frame, might make a variable stack thing to do this
@@ -174,8 +186,7 @@ anything after this is prob half-assed
 variables: list[str] = []
 
 
-
-#### varDeclaration if is being executed when it should not be. I dont know why. I am gojing to reboot the server right now to maybe get python stuff.
+# varDeclaration if is being executed when it should not be. I dont know why. I am gojing to reboot the server right now to maybe get python stuff.
 def parseVariables(node: Node):
     # do variable declarations first, then references after because otherwise it does not work.
     for i in node.children:
@@ -183,22 +194,24 @@ def parseVariables(node: Node):
             if i.name in variables:
                 # error already defined:
                 print("ALREADY DEFINED")
-            
+
             # makeshift fix, works but i should not need to add this here.
             if type(i.name) == int:
                 continue
             placeholderName = i.name
             i.name = len(variables)
             variables.append(placeholderName)
+            
+
         parseVariables(i)
-    
+
     # do the same but with arguments.
     for i in node.arguments:
         if i.nodeName == "varDeclaration":
             if i.name in variables:
                 # error already defined:
                 print("ALREADY DEFINED")
-            
+
             # makeshift fix, works but i should not need to add this here.
             if type(i.name) == int:
                 continue
@@ -217,7 +230,15 @@ def parseVariables(node: Node):
             else:
                 i.nodeName = "variableReference"
                 i.name = variables.index(i.name)
+        elif i.nodeName == "assignment":
+            # an assignment node.
+            if type(i.name) == int:
+                # skip ints for some reason because they barely work.
+                continue
+            i.name = variables.index(i.name)
+            pass
         parseVariables(i)
+
 
 if __name__ == "__main__":
     inputs = """
@@ -232,8 +253,8 @@ if __name__ == "__main__":
     """
     lexed = lex(inputs)
     ast = parseBody(lexed)
-    parseConstants(ast)
     parseVariables(ast)
+    parseConstants(ast)
     parseFunctions(ast)
     ast.printAll()
     print("Constants: ", constants)

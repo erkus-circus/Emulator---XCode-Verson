@@ -1,0 +1,11 @@
+func main@int (argv@int) {
+    var age@int = 15;
+    var ashtensAge@int = 9;
+    var ericasAge@int = 15;
+    var avisAge@int = 14;
+    print("Total Number of Ages Combined as an ASCII Character: ");
+    var totalAges@int;
+    totalAges = age + ashtensAge + ericasAge + avisAge;
+    print(totalAges);
+    print("\n");
+}

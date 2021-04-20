@@ -76,7 +76,7 @@ def formatString(line):
 
 numberLines = 0
 
-def createData(text):
+def createData(text) -> str:
   global numberLines
   output = ""
   for i in text.splitlines():
