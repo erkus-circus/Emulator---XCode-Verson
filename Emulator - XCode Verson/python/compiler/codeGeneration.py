@@ -12,32 +12,34 @@ from debugging import DebugFlags
 constantsData = ""
 output = ""
 
-
+# this is how many spaces are in between line and its comment.
+commentWidth = 4 * " "
 
 # wraps a bunch of code into a function
-# 
+#
 def wrapInFunction(code: str, functionIndex: int) -> str:
     ## TODO: bytes from number gives it a 4 long hex, when it should be 2 long hex number.
     argumentsLen =  ' '.join(bytesFromNumber(len(functionData[functionIndex].paramTypes)).split()[2:])
-    return "\nFUN_HEAD\n" + argumentsLen + "\n" + code + "\n"
+    return "\nFUN_HEAD" + " ; Index: " + str(functionIndex) + "\n" + argumentsLen + " ; " + str(len(functionData[functionIndex].paramTypes)) + " parameters.\n" + code + "\n"
 
 
 def createExpression(expression: list[Node]) -> str:
     # the dictionary for comparing operators to their bytecode values.
     operatorDict = {
-        '+': "IADD",
-        '-': "ISUB",
-        '*': "IMUL",
-        '/': "IDIV",
-        '%': "IMOD",
+        '+': "IADD ; Add",
+        '-': "ISUB ; Subtract",
+        '*': "IMUL ; Multiply",
+        '/': "IDIV ; Divide",
+        '%': "IMOD ; Modulo",
         
         # not sure if these would work
-        "<=": "LTE",
-        ">=": "GTE",
-        "<": "LT",
-        ">": "GT",
-        "==": "EQ"
+        "<=": "LTE ; Less Than or Equal To",
+        ">=": "GTE ; Greater Than Or Equal To",
+        "<": "LT ; Less Than",
+        ">": "GT ; Greater Than",
+        "==": "EQ ; Equal To"
     }
+
     currentOutput = ""
     # loop through the expression and create an currentOutput
     for i in expression:
@@ -45,9 +47,9 @@ def createExpression(expression: list[Node]) -> str:
             # do something special here.
             currentOutput += createCall(i)
         elif i.nodeName == "variableReference":
-            currentOutput += '\n' + getString(i.name, "L_")
+            currentOutput += '\n' + getString(i.name, "L_") + " ; Variable Index: " + i.name
         elif i.nodeName == "constantReference":
-            currentOutput += '\n' + getString(i.value, "C_")
+            currentOutput += '\n' + getString(i.value, "C_") + " ; " + str(constants[i.value]) + ", Index: " + str(i.value)
         elif i.nodeName == "operator":
             currentOutput += '\n' + operatorDict[i.value]
     return currentOutput
@@ -96,6 +98,7 @@ def createVariableAssignment(node: Node) -> str:
 # create a higher level constants string, then output it
 def createConstants(constants: list) -> str:
     global constantsData
+
     for i in constants:
         if type(i) == int:
             # int
@@ -160,7 +163,9 @@ def createIf(node: Node):
         ifOutput += numStatements
     else:
         ifOutput += "\nZERO"
-    ifOutput += "\nCOMP" + ifBody
+    # [1:] gets rid of the \n at the start of the body.
+    # this makes the bytecode much more readable.
+    ifOutput += "\nCOMP" + ifBody[1:] + "\n"
     return ifOutput
 
 def createCode(node: Node, variables: list[str], functions: list[str], functionData: list[str], constants: list):

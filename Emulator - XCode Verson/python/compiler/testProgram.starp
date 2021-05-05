@@ -1,13 +1,12 @@
 func main@int (argv@int) {
-    var a@int = 15;
-    if a > 16 {
-        print("This does not print");
+    if 15 > 16 {
+        print(100);
     }
-    if a + 1 > 16 {
-        print("This also does not print");
+    if 15 + 1 > 16 {
+        print(101);
     }
-    if a + 2 > 16 {
-        print("This prints though!");
+    if 15 + 2 > 16 {
+        print(102);
     }
     return 0;
 }

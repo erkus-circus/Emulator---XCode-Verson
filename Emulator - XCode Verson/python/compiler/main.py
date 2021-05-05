@@ -32,10 +32,11 @@ def build(inputProgram: str) -> str:
 
     # add index for constants, variables, and functions.
     for i in range(max(max(len(variables), len(constants)), len(functions))):
-        constants.append(i)
+        if not i in constants:
+            constants.append(i)
     if DebugFlags.showConstantsLists:
         # make the variable index and constant index constants:
-        print ("================= FUNCTIONS, CONSTANTS, VARIABLES =================")
+        print ("================= FUNCTIONS, CONSTANTS (pre-code generation), VARIABLES =================")
         print("Functions: ", functions)
         print("Constants: ", constants)
         print("Variables: ", variables)
