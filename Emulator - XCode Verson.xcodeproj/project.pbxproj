@@ -24,7 +24,6 @@
 
 /* Begin PBXFileReference section */
 		5A16BCCD25B68B9E00B1B8C2 /* Emulator - XCode Verson */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Emulator - XCode Verson"; sourceTree = BUILT_PRODUCTS_DIR; };
-		5A16BCE525B68E5200B1B8C2 /* assembly.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = assembly.txt; sourceTree = "<group>"; };
 		5A16BCE625B68E5200B1B8C2 /* array.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = array.h; sourceTree = "<group>"; };
 		5A16BCE725B68E5C00B1B8C2 /* BinKeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BinKeys.h; sourceTree = "<group>"; };
 		5A16BCE825B68E5C00B1B8C2 /* constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = constants.h; sourceTree = "<group>"; };
@@ -35,9 +34,9 @@
 		5A16BCF425B6906200B1B8C2 /* assembler.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = assembler.py; sourceTree = "<group>"; };
 		5A1989F525FC7C8400A14A66 /* createData.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = createData.py; sourceTree = "<group>"; };
 		5A1989F625FC7C8400A14A66 /* out.emulate */ = {isa = PBXFileReference; lastKnownFileType = file; path = out.emulate; sourceTree = "<group>"; };
-		5A1989F725FC7C8400A14A66 /* data.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = data.txt; sourceTree = "<group>"; };
 		5ABFF84C25FE8486006FFC21 /* dataTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = dataTypes.h; sourceTree = "<group>"; };
 		5ABFF84D25FE84E9006FFC21 /* data.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = data.h; sourceTree = "<group>"; };
+		5AF3CAB42642562B0017A2D2 /* compiler */ = {isa = PBXFileReference; lastKnownFileType = folder; path = compiler; sourceTree = "<group>"; };
 		5AFEA8922605BB19008548F1 /* sleep.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sleep.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -82,7 +81,6 @@
 				5AFEA8922605BB19008548F1 /* sleep.h */,
 				5ABFF84D25FE84E9006FFC21 /* data.h */,
 				5ABFF84C25FE8486006FFC21 /* dataTypes.h */,
-				5A16BCE525B68E5200B1B8C2 /* assembly.txt */,
 			);
 			path = "Emulator - XCode Verson";
 			sourceTree = "<group>";
@@ -90,8 +88,8 @@
 		5A16BCF325B6906200B1B8C2 /* python */ = {
 			isa = PBXGroup;
 			children = (
+				5AF3CAB42642562B0017A2D2 /* compiler */,
 				5A1989F525FC7C8400A14A66 /* createData.py */,
-				5A1989F725FC7C8400A14A66 /* data.txt */,
 				5A1989F625FC7C8400A14A66 /* out.emulate */,
 				5A16BCF425B6906200B1B8C2 /* assembler.py */,
 			);
