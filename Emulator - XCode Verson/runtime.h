@@ -410,6 +410,7 @@ struct Data call(struct Function fn)
             {
                 s_push(&fn.stack, create_data((int)s_top(&fn.stack).size));
             }
+                /// TODO: CHANGE ALL OF THESE TO JUST PUT A 1 OR ZERO ONTO THE STACK AFTER EVALUATING. THEN YOU CAN HAVE A JMP ONLY _IF_ THE TOP OF THE STACK SAYS TRUE. THIS IS SO MUCH MORE EFFICIENT
             case LT:
             {
                 // operator 1
@@ -420,10 +421,13 @@ struct Data call(struct Function fn)
                 int op2 = s_top(&fn.stack).values[0];
                 s_pop(&fn.stack);
                 
-                // if conditional is true, skip a PC
-                if (op1 < op2) {
-                    fn.PC += 1;
-                }
+                // push the result onto the stack:
+                struct Data res;
+                init_data(&res, 1);
+                
+                res.values[0] = op1 > op2;
+                
+                s_push(&fn.stack, res);
                 break;
             }
             case GT:
@@ -436,10 +440,13 @@ struct Data call(struct Function fn)
                 int op2 = s_top(&fn.stack).values[0];
                 s_pop(&fn.stack);
                 
-                // if conditional is true, skip a PC
-                if (op1 > op2) {
-                    fn.PC += 1;
-                }
+                // push the result onto the stack:
+                struct Data res;
+                init_data(&res, 1);
+                
+                res.values[0] = op1 < op2;
+                
+                s_push(&fn.stack, res);
                 break;
             }
             case GTE:
@@ -452,10 +459,13 @@ struct Data call(struct Function fn)
                 int op2 = s_top(&fn.stack).values[0];
                 s_pop(&fn.stack);
                 
-                // if conditional is true, skip a PC
-                if (op1 >= op2) {
-                    fn.PC += 1;
-                }
+                // push the result onto the stack:
+                struct Data res;
+                init_data(&res, 1);
+                
+                res.values[0] = op1 <= op2;
+                
+                s_push(&fn.stack, res);
                 break;
             }
             case LTE:
@@ -468,10 +478,13 @@ struct Data call(struct Function fn)
                 int op2 = s_top(&fn.stack).values[0];
                 s_pop(&fn.stack);
                 
-                // if conditional is true, skip a PC
-                if (op1 <= op2) {
-                    fn.PC += 1;
-                }
+                // push the result onto the stack:
+                struct Data res;
+                init_data(&res, 1);
+                
+                res.values[0] = op1 >= op2;
+                
+                s_push(&fn.stack, res);
                 break;
             }
             case EQ:
@@ -484,10 +497,13 @@ struct Data call(struct Function fn)
                 int op2 = s_top(&fn.stack).values[0];
                 s_pop(&fn.stack);
                 
-                // if conditional is true, skip a PC
-                if (op1 == op2) {
-                    fn.PC += 1;
-                }
+                // push the result onto the stack:
+                struct Data res;
+                init_data(&res, 1);
+                
+                res.values[0] = op1 == op2;
+                
+                s_push(&fn.stack, res);
                 break;
             }
             case NEQ:
@@ -500,16 +516,35 @@ struct Data call(struct Function fn)
                 int op2 = s_top(&fn.stack).values[0];
                 s_pop(&fn.stack);
                 
-                // if conditional is true, skip a PC
-                if (op1 != op2) {
-                    fn.PC += 1;
-                }
+                // push the result onto the stack:
+                struct Data res;
+                init_data(&res, 1);
+                
+                res.values[0] = op1 != op2;
+                
+                s_push(&fn.stack, res);
                 break;
             }
             case SKIP:
                 fn.PC += s_top(&fn.stack).values[0];
                 s_pop(&fn.stack);
                 break;
+            case COMP:
+            {
+                // get the numbe of lines to skip if evaluates to FALSE:
+                int linesToSkip = s_top(&fn.stack).values[0];
+                s_pop(&fn.stack);
+                
+                // get the true or false to compare.
+                int compareRes = s_top(&fn.stack).values[0];
+                s_pop(&fn.stack);
+                
+                // do the comparing
+                if (!compareRes) {
+                    fn.PC += linesToSkip;
+                }
+                break;
+            }
             case BREAKPOINT:
                 s_top(&fn.stack);
                 break;

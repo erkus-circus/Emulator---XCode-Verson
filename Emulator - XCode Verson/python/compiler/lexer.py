@@ -77,7 +77,6 @@ class LexList:
 
 
 class Types:
-    EQUALS = Type("EQUALS", "=",1)
     ID = Type("ID", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", 1)
     STRSEP = Type("STRSEP", "\"`'")
     NUM = Type("NUM", "1234567890", 1)
@@ -88,7 +87,9 @@ class Types:
     PARENTH = Type("PARENTH", "()")
     CURLY_PAREN = Type("CURLY_PAREN", "{}")
     BRACKET = Type("BRACKET", "[]")
-    OPERATOR = Type("OPERATOR", "/*+-<>")
+    # adding the = sign here to make my life much easier.
+    COMPOPERATOR = Type("COMPOPERATOR", "<>=", 1)
+    OPERATOR = Type("OPERATOR", "/*+-")
     PERIOD = Type("PERIOD", ".")
     USCORE = Type("USCORE","_")
     BSLASH = Type("BSLASH","\\")
@@ -101,7 +102,6 @@ class Types:
     # maybe should add EOF type?]
 
 types = [
-    Types.EQUALS,
 	Types.ID,
 	Types.STRSEP,
 	Types.NUM,
@@ -112,6 +112,7 @@ types = [
 	Types.PARENTH,
 	Types.CURLY_PAREN,
 	Types.BRACKET,
+    Types.COMPOPERATOR,
 	Types.OPERATOR,
 	Types.PERIOD,
 	Types.USCORE,
@@ -127,8 +128,6 @@ statements = [
 	"var",
 	"if",
 	"return",
-    "interface",
-    "class",
     "include"
 ]
 

@@ -7,7 +7,8 @@ Created: 4-19-21, in TLP class
 
 from syntaxTree import Node
 from createData import bytesFromNumber, createData
-from actionTree import Function, functionData, specialFunctionData
+from actionTree import Function, functionData, specialFunctionData, constants
+from debugging import DebugFlags
 constantsData = ""
 output = ""
 
@@ -28,7 +29,14 @@ def createExpression(expression: list[Node]) -> str:
         '-': "ISUB",
         '*': "IMUL",
         '/': "IDIV",
-        '%': "IMOD"
+        '%': "IMOD",
+        
+        # not sure if these would work
+        "<=": "LTE",
+        ">=": "GTE",
+        "<": "LT",
+        ">": "GT",
+        "==": "EQ"
     }
     currentOutput = ""
     # loop through the expression and create an currentOutput
@@ -95,6 +103,11 @@ def createConstants(constants: list) -> str:
         else:
             # string uses less bits to hold values
             constantsData += "\nS " + i
+    # comment this out later:
+    if DebugFlags.showHumanConstants:
+        print("=============== Constants in human readable format ===============")
+        print(constantsData)
+    # above line
     return createData(constantsData.strip())
 
 # number of functions
@@ -103,23 +116,57 @@ functionCount = 0
 def createBody(node: Node) -> str:
     global functionCount
     # the current output, this will go into wrapFunction to turn it into a function before going into the output.
+    
     currentOutput = ""
+    ## TODO: thinking maybe here count how many lines currentOutput is
+    # so then i am able to count how many statements execute
+    # which then is used for skipping the correct amout of if statements if it does not work. 
+
+
     for i in node.children:
         # parse a variable declaration
         if i.nodeName == "varDeclaration" or i.nodeName == "assignment":
             currentOutput += createVariableAssignment(i)
         elif i.nodeName == "function":
+            # assumes i has at least one child, because if not then it is broken.
             currentOutput += wrapInFunction(createBody(i.children[0]), functionIndex=functionCount)
             # increment the number of functiions parsed.
             functionCount += 1
         elif i.nodeName == "call":
             currentOutput += createCall(i)
+        elif i.nodeName == "return":
+            currentOutput += createExpression(i.children[0].children)
+            currentOutput += "\nRET"
+        elif i.nodeName == "if":
+            currentOutput += createIf(i)
     return currentOutput
 
+# create an if statement
+def createIf(node: Node):
+    ifOutput = ""
+    # first is the expression to check if is true, then after is the number of lines to skip if the expression evaluates to FALSE.
+    ifOutput += createExpression(node.arguments[0].children)
+    ifBody = createBody(node)
+    if ifBody.strip() != "":
+        #ifOutput += '\n' + str()
+        numStatements = len(ifBody.strip().split("\n"))
+        if numStatements in constants:
+                # the constant is already defined
+                numStatements = "\n" + getString(constants.index(numStatements), "C_")
+        else:
+            # make the value the current len of constants, then append the new constant to the constants array
+            constants.append(numStatements)
+            numStatements = "\n" + getString(len(constants) - 1, "C_")
+        ifOutput += numStatements
+    else:
+        ifOutput += "\nZERO"
+    ifOutput += "\nCOMP" + ifBody
+    return ifOutput
 
 def createCode(node: Node, variables: list[str], functions: list[str], functionData: list[str], constants: list):
-    constants = createConstants(constants)
     functionsOut = createBody(node)
+    # is below because more constants can be added (from if statements)
+    constants = createConstants(constants)
     # - 1 i think for function count?
     output = constants + str(' '.join(bytesFromNumber(functionCount).split()[2:])) + functionsOut
     return output

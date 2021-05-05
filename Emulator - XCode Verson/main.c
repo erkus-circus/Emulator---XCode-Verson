@@ -41,12 +41,12 @@ int main(int argc, char *argv[])
     FILE * fp;
     
     // DEBUG ONLY: assemble assembly to bytecode, then run
-    system("python3 \"/Users/ericdiskin/code/code/c/Emulator - XCode Verson/Emulator - XCode Verson/python/assembler.py\"");
+    system("python3 \"/Users/ericdiskin/Documents/code/code/c/Emulator - XCode Verson/Emulator - XCode Verson/python/assembler.py\"");
     
     
     // TODO: file:
     
-    char* Fname = "out.emulate";
+    char* Fname = "/Users/ericdiskin/Library/Developer/Xcode/DerivedData/Emulator_-_XCode_Verson-bgutdxdelmtmxqdfbharumjtmmjp/Build/Products/Debug/out.emulate";
     
     if ((fp = fopen(Fname,"rb")) == NULL)
     {
@@ -77,8 +77,6 @@ int main(int argc, char *argv[])
     // init the global variable vector:
     v_init(&globalVars);
     
-    call(functions[0]);
+    return call(functions[0]).values[0];
     
-
-    return 0;
 }

@@ -15,6 +15,14 @@ Each Parse function takes in at least a lexedList and returns a Node
 """
 
 
+# used for includes.
+# every include is parsed into a tree, then at the end of the parsing of the LexList,
+# add these in reversed order to the syntax tree.
+## if it has already been included then fuck.
+includedTrees = []
+
+
+
 class Node:
     def __init__(self, name) -> None:
         # the name of node: string, body, if, func declaration, like statements
@@ -118,8 +126,6 @@ def parseBody(lexed: LexList, end="EOF") -> Node:
 
 # parse a thing like var name@type;
 # isArgument tells this if the thing being parsed is an argument or a variable declaration
-
-
 def parseVarDeclaration(lexed: LexList, isArgument=False) -> Node:
 
     # return value:
@@ -149,7 +155,9 @@ def parseVarDeclaration(lexed: LexList, isArgument=False) -> Node:
     # expect either a ; or an = or a , or a )
     lexed.stepUp()
     lexed.skipSpace()
-    lexed.expect(Types.SEMICOL, Types.EQUALS, Types.COMMA, Types.PARENTH)
+    lexed.expect(Types.SEMICOL, Types.COMPOPERATOR, Types.COMMA, Types.PARENTH)
+
+    ## TODO: make sure that the operator type expected here is a = sign.
 
     # end here if it is a semicolon or a comma(argument) or a ) (argument)
     if lexed.getType() == "SEMICOL" or ((lexed.getType() == "COMMA" or lexed.getVal() == ")") and isArgument):
@@ -240,7 +248,9 @@ def parseAssignment(lexed: LexList) -> Node:
     assignmentTree = Node("assignment")
 
     # expect a = sign
-    lexed.expect(Types.EQUALS)
+    lexed.expect(Types.COMPOPERATOR)
+
+    ## TODO: make this check for equals sign here
 
     # down and stepDown the space to get the name
     lexed.stepDown()
@@ -321,6 +331,7 @@ def parseArguments(lexed: LexList) -> Node:
 
 # ending is when to expect the ending of the expression, ie. ) or , or ;
 # expectingOperator is if expecting an operator after an ID or const
+### what is skip? I am not sure it is not clear.
 def parseExpression(lexed: LexList, ending: str, skip=False) -> Node:
 
     expressionTree = Node("expression")
@@ -347,7 +358,7 @@ def parseExpression(lexed: LexList, ending: str, skip=False) -> Node:
 
         if expectingOperator:
             # expect an operator, or a parenthesis
-            lexed.expect(Types.OPERATOR)
+            lexed.expect(Types.OPERATOR, Types.COMPOPERATOR)
             # create a node for the operator
             operatorNode = Node("operator")
             operatorNode.value = lexed.getVal()
@@ -424,7 +435,13 @@ def parseExpression(lexed: LexList, ending: str, skip=False) -> Node:
         "+": 2,
         "-": 2,
         "/": 3,
-        "*": 3
+        "*": 3,
+        # not sure if these would work
+        "<=": 0,
+        ">=": 0,
+        "<": 0,
+        ">": 0,
+        "==": 0
     }
 
     for token in queue:
@@ -455,7 +472,20 @@ def parseExpression(lexed: LexList, ending: str, skip=False) -> Node:
 
 
 def parseIf(lexed: LexList) -> Node:
-    pass
+    # starts LexList pointing to if STATEMENT token.
+    lexed.expect(Types.STATEMENT)
+
+    # the if node for the tree
+    ifNode = Node("if")
+
+    # parse the if expression all the way to {, then get the body of the if and put it as children.
+    # arguments is the expression and children is the body.
+    ifNode.arguments.append(parseExpression(lexed, "{"))
+
+    ifNode.children = parseBody(lexed, "}").children
+
+    return ifNode
+
 
 
 def parseNumber(lexed: LexList) -> Node:
@@ -574,6 +604,9 @@ def parseReturn(lexed: LexList) -> Node:
 
     return returnNode
 
+# parse an include, then add it to the syntax tree.
+def parseInclude(lexed: LexList) -> Node:
+    pass
 
 if __name__ == "__main__":
     toLex = """ 

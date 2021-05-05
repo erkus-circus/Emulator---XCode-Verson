@@ -125,6 +125,7 @@
 
 // Conditionals:
 // only checks values[0], might need to fix that eventually, in fact i will need to fix this eventually
+// takes op1 and op2 off the stack, then does the operation (<> <=> == !=), then returns the 0|1 value and pushes that value onto the stack.
 #define LT '\x39'
 #define GT '\x3a'
 #define GTE '\x3b'
@@ -160,7 +161,7 @@
 #define GL_B '\x49'
 #define GL_S '\x4a'
 
-// set local variables
+// set global variables
 
 #define GS_0 '\x4b'
 #define GS_1 '\x4c'
@@ -178,12 +179,16 @@
 // pops off top of stack
 #define POP '\x53'
 
+
+// conditionals - Actual
+/// made this late at night dont expect anything good.
+#define COMP '\x54'
+
 // for exiting the program
 
 // File IO (later convert to streams):
 
-
 // debugging tools:
-#define BREAKPOINT '\x54'
+#define BREAKPOINT '\x55'
 
 #endif // BIN_KEYS

@@ -4,7 +4,7 @@ binKeysStr = ''
 
 binKeys = {}
 
-with open("/Users/ericdiskin/code/code/c/Emulator - XCode Verson/Emulator - XCode Verson/binKeys.h", "r") as binKeysFile:
+with open("/Users/ericdiskin/Documents/code/code/c/Emulator - XCode Verson/Emulator - XCode Verson/BinKeys.h", "r") as binKeysFile:
     binKeysStr = binKeysFile.read()
 
 for i in binKeysStr.splitlines():
@@ -15,7 +15,7 @@ for i in binKeysStr.splitlines():
 
 file = ""
 
-with open("/Users/ericdiskin/code/code/c/Emulator - XCode Verson/Emulator - XCode Verson/assembly.txt","r") as f:
+with open("/Users/ericdiskin/Documents/code/code/c/Emulator - XCode Verson/Emulator - XCode Verson/python/compiler/testProgram.starp.starpCode","r") as f:
     file = f.read()
 
 file = file.split("\n")
@@ -25,10 +25,13 @@ for i in file:
 
 noCommentsFile = " ".join(noCommentsFile)
 
-with open("/Users/ericdiskin/Library/Developer/Xcode/DerivedData/Emulator_-_XCode_Verson-hactcdxtwvteavblvmvwyqyywlgq/Build/Products/Debug/out.emulate", "wb") as out:
+with open("/Users/ericdiskin/Library/Developer/Xcode/DerivedData/Emulator_-_XCode_Verson-bgutdxdelmtmxqdfbharumjtmmjp/Build/Products/Debug/out.emulate", "wb") as out:
     for i in noCommentsFile.split():
         if not i.startswith("0x"):
             out.write(binKeys[i])
         else:
+            # the string is actually 0x6 or something, does not work, so pad it.
+            if len(i) == 3:
+                i = "0x0" + i[2:]
             numberString = int.from_bytes(bytearray.fromhex(i[2:]), byteorder='big', signed=True)
             out.write(bytearray.fromhex(i[2:]))
