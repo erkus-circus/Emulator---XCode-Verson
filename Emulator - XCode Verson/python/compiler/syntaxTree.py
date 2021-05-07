@@ -130,6 +130,9 @@ def parseVarDeclaration(lexed: LexList, isArgument=False) -> Node:
 
     # return value:
     varDeclarationNode = Node("varDeclaration")
+    
+    # what type of variable.
+    varDeclarationNode.type = "parameter" if isArgument  else "variable"
 
     # starts pointintg lexed on top of the STATEMENT, or a COMMA. maybe: parenthesis for opening function declarations
     lexed.expect(Types.STATEMENT, Types.COMMA, Types.PARENTH)
@@ -406,6 +409,7 @@ def parseExpression(lexed: LexList, ending: str, skip=False) -> Node:
             expressionTree.children.append(parseID(lexed))
             # in an expression following a symbol you need an operator
             expectingOperator = True
+            
             # what does this leave lexed pointing to?
 
         elif lexed.getType() == "STRSEP":

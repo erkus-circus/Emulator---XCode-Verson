@@ -39,11 +39,15 @@ functionData: list[Function] = [
 # special functions, builtin ones.
 specialFunctionData: list[Function] = [
     # print function:
-    Function(["string"], None, assembly="PUT_CHARS")
+    Function(["string"], None, assembly="PUT_CHARS"),
+    Function(["string", "string"], "string", assembly="DCPY"),
+    Function(["string", "int"], "string", assembly="DGET")
 ]
 
 specialFunctions = [
-    "print"
+    "print",
+    "strcpy",
+    "getIndex"
 ]
 
 # constants is the list of all of the constants in the program. at the end it can generate from the constants generator or something.

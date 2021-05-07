@@ -3,13 +3,10 @@
    version = "1.0">
    <ContextStates>
       <ContextState
-         contextName = "setConstants:constants.h">
+         contextName = "call:runtime.h">
          <PersistentStrings>
             <PersistentString
-               value = "constants">
-            </PersistentString>
-            <PersistentString
-               value = "constants[1].values[1]">
+               value = "op1">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -39,24 +36,18 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "call:runtime.h">
-         <PersistentStrings>
-            <PersistentString
-               value = "s_top(&amp;fn.stack)">
-            </PersistentString>
-            <PersistentString
-               value = "instructionsExecuted">
-            </PersistentString>
-            <PersistentString
-               value = "">
-            </PersistentString>
-            <PersistentString
-               value = "globalVars">
-            </PersistentString>
-         </PersistentStrings>
+         contextName = "free_data:data.h">
       </ContextState>
       <ContextState
-         contextName = "free_data:data.h">
+         contextName = "setConstants:constants.h">
+         <PersistentStrings>
+            <PersistentString
+               value = "constants">
+            </PersistentString>
+            <PersistentString
+               value = "constants[1].values[1]">
+            </PersistentString>
+         </PersistentStrings>
       </ContextState>
    </ContextStates>
 </VariablesViewState>

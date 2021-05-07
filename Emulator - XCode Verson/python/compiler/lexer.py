@@ -64,7 +64,7 @@ class LexList:
     # print out all of the lexed list
     def printOut(self):
         for i in range(self.length):
-            print(self.vals[i] + ": " + self.types[i])
+            print("(" + str(i) + ")" + self.vals[i] + ": " + self.types[i])
     
 
     # checks if you are able to retrieve a token

@@ -1,16 +1,16 @@
 
 class DebugFlags:
     # show the end result bytecode
-    showBytecode = False
+    showBytecode = True
     # show the functions, variables, and constants lists:
     showConstantsLists = True
     # show the preprocessed AST
-    showPreAST = False
+    showPreAST = True
     # show postprocessed AST
-    showPostAST = False
+    showPostAST = True
     # show the lexed tokens
-    showLexedTokens = False
+    showLexedTokens = True
     # show human readable constants format.
-    showHumanConstants = False
+    showHumanConstants = True
     # show all constants in non human form.
-    showAllConstants = False
+    showAllConstants = True

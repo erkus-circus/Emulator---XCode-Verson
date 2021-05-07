@@ -300,7 +300,7 @@ struct Data call(struct Function fn)
                 s_push(&fn.stack, v_get(&globalVars, ucharToShort(fn.intstructions + fn.PC + 1)));
                 fn.PC += 2;
                 break;
-                
+
             case GS_0:
                 v_set(&globalVars, 0, s_top(&fn.stack));
                 s_pop(&fn.stack);
@@ -405,6 +405,25 @@ struct Data call(struct Function fn)
             case DCPY:
             {
                 // TODO: do this, dont feel like doing this one rn
+                struct Data dest = s_top(&fn.stack);
+                s_pop(&fn.stack);
+                struct Data src = s_top(&fn.stack);
+                s_pop(&fn.stack);
+                
+                struct Data res;
+                init_data(&res, dest.size + src.size);
+                
+                for (int i = 0; i < src.size; i++) {
+                    res.values[i] = src.values[i];
+                }
+                
+                for (int j = 0; j < dest.size; j++) {
+                    res.values[src.size + j] = dest.values[j];
+                    
+                }
+                
+                s_push(&fn.stack, res);
+                break;
             }
             case DSIZE:
             {

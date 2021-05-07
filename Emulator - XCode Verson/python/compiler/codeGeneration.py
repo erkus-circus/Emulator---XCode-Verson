@@ -7,7 +7,7 @@ Created: 4-19-21, in TLP class
 
 from syntaxTree import Node
 from createData import bytesFromNumber, createData
-from actionTree import Function, functionData, specialFunctionData, constants
+from actionTree import Function, functionData, specialFunctionData, constants, functions
 from debugging import DebugFlags
 constantsData = ""
 output = ""
@@ -47,7 +47,7 @@ def createExpression(expression: list[Node]) -> str:
             # do something special here.
             currentOutput += createCall(i)
         elif i.nodeName == "variableReference":
-            currentOutput += '\n' + getString(i.name, "L_") + " ; Variable Index: " + i.name
+            currentOutput += '\n' + getString(i.name, "L_") + " ; Variable Index: " + str(i.name)
         elif i.nodeName == "constantReference":
             currentOutput += '\n' + getString(i.value, "C_") + " ; " + str(constants[i.value]) + ", Index: " + str(i.value)
         elif i.nodeName == "operator":
@@ -67,7 +67,7 @@ def createCall(node: Node) -> str:
         currentOutput += '\n' + specialFunctionData[node.name].assembly
     else:
         # get call index
-        currentOutput += '\n' + getString(node.name, "C_")
+        currentOutput += '\n' + getString(node.name, "C_")  + " ; " + str(functions[node.name]) + ", Function Index: " + str(node.name)
         # call the function
         currentOutput += '\n' + "CALL"
     return currentOutput
@@ -152,20 +152,22 @@ def createIf(node: Node):
     ifBody = createBody(node)
     if ifBody.strip() != "":
         #ifOutput += '\n' + str()
+        ###TIDIL here it dies not account fo rC_B and thigns like that.
+        
         numStatements = len(ifBody.strip().split("\n"))
         if numStatements in constants:
                 # the constant is already defined
-                numStatements = "\n" + getString(constants.index(numStatements), "C_")
+                numStatements = "\n" + getString(constants.index(numStatements), "C_")  + " ; " + str(constants[constants.index(numStatements)]) + ", Index: " + str(constants.index(numStatements))
         else:
             # make the value the current len of constants, then append the new constant to the constants array
             constants.append(numStatements)
-            numStatements = "\n" + getString(len(constants) - 1, "C_")
+            numStatements = "\n" + getString(len(constants) - 1, "C_") + " ; " + str(constants[len(constants) - 1]) + ", Index: " + str(len(constants) - 1)
         ifOutput += numStatements
     else:
         ifOutput += "\nZERO"
     # [1:] gets rid of the \n at the start of the body.
     # this makes the bytecode much more readable.
-    ifOutput += "\nCOMP" + ifBody[1:] + "\n"
+    ifOutput += "\nCOMP\n" + ifBody[1:] + "\n"
     return ifOutput
 
 def createCode(node: Node, variables: list[str], functions: list[str], functionData: list[str], constants: list):
