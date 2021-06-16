@@ -184,11 +184,16 @@
 /// made this late at night dont expect anything good.
 #define COMP '\x54'
 
+
+// input a string and push it to stack
+#define INPUT '\x55'
+
+
 // for exiting the program
 
 // File IO (later convert to streams):
 
 // debugging tools:
-#define BREAKPOINT '\x55'
+#define BREAKPOINT '\x56'
 
 #endif // BIN_KEYS

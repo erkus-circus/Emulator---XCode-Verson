@@ -575,6 +575,29 @@ struct Data call(struct Function fn)
                 }
                 break;
             }
+            case INPUT:
+            {
+                int *values = malloc(8 * sizeof(int));
+                int index = 0;
+                
+                char c;
+                while ((c = getchar()) != '\n') {
+                    values[index] = (int)c;
+                    index++;
+                    if (index > sizeof(*values) / sizeof(int)) {
+                        values = realloc(values, index * 2 * sizeof(int));
+                    }
+                }
+                values = realloc(values, index * sizeof(int));
+                
+                struct Data res;
+                init_data(&res, index);
+                
+                memcpy(res.values, values, index * sizeof(int));
+                
+                s_push(&fn.stack, res);
+                break;
+            }
             case BREAKPOINT:
                 s_top(&fn.stack);
                 break;

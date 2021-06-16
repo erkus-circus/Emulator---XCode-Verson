@@ -40,12 +40,15 @@ functionData: list[Function] = [
 specialFunctionData: list[Function] = [
     # print function:
     Function(["string"], None, assembly="PUT_CHARS"),
+    # input:
+    Function([], "string", assembly="INPUT"),
     Function(["string", "string"], "string", assembly="DCPY"),
     Function(["string", "int"], "string", assembly="DGET")
 ]
 
 specialFunctions = [
     "print",
+    "input",
     "strcpy",
     "getIndex"
 ]

@@ -589,9 +589,16 @@ def parseFunctionDeclaration(lexed: LexList) -> Node:
         # throw an error here
         pass
 
-    # this while loop gets all the arguments.
-    while lexed.getVal() != ')' and lexed.canRetrieve():
-        functionNode.arguments.append(parseVarDeclaration(lexed, True))
+    # check if there are any arguments in function. 
+    # If so do while loop, else skip over
+    lexed.stepUp()
+
+    if lexed.getVal() != ")":
+        lexed.stepDown()
+        # this while loop gets all the arguments.
+        while lexed.getVal() != ')' and lexed.canRetrieve():
+            functionNode.arguments.append(parseVarDeclaration(lexed, True))
+        
 
     # expect the ending parenthesis
     lexed.expect(Types.PARENTH)
