@@ -95,9 +95,13 @@ def createData(text) -> str:
   return output
 
 if __name__ == "__main__":
-    with open("./data.txt", "r") as f:
-        text = f.read()
-      
+    text = """N 0
+N 1
+N 2
+N 3
+N 4
+N 5
+N 6"""
     output = ''.join(createData(text))
     with open("outputData.txt", 'w') as fo:
         fo.write(output)

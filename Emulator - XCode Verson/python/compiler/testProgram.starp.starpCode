@@ -1,4 +1,4 @@
-0x00 0x00 0x00 0x0e ; 14 Constants:
+0x00 0x00 0x00 0x12 ; 18 Constants:
 0x01 ; One Byte per Data block
 0x00 0x00 0x00 0x05 ; This constant [INDEX: 0] takes up (5) bytes
 0x48 ; Char: 'H'
@@ -8,10 +8,10 @@
 0x20 ; Char: ' '
 0x04 ; Four Bytes per Data block
 0x00 0x00 0x00 0x01 ; This constant [INDEX: 1]
-0x00 0x00 0x00 0x00 ; Number: 0
+0x00 0x00 0x00 0x01 ; Number: 1
 0x04 ; Four Bytes per Data block
 0x00 0x00 0x00 0x01 ; This constant [INDEX: 2]
-0x00 0x00 0x00 0x01 ; Number: 1
+0x00 0x00 0x00 0x00 ; Number: 0
 0x04 ; Four Bytes per Data block
 0x00 0x00 0x00 0x01 ; This constant [INDEX: 3]
 0x00 0x00 0x00 0x02 ; Number: 2
@@ -41,80 +41,198 @@
 0x00 0x00 0x00 0x0a ; Number: 10
 0x04 ; Four Bytes per Data block
 0x00 0x00 0x00 0x01 ; This constant [INDEX: 12]
-0x00 0x00 0x00 0x10 ; Number: 16
+0x00 0x00 0x00 0x0b ; Number: 11
 0x04 ; Four Bytes per Data block
 0x00 0x00 0x00 0x01 ; This constant [INDEX: 13]
-0x00 0x00 0x00 0x17 ; Number: 23
+0x00 0x00 0x00 0x0c ; Number: 12
+0x04 ; Four Bytes per Data block
+0x00 0x00 0x00 0x01 ; This constant [INDEX: 14]
+0x00 0x00 0x00 0x0d ; Number: 13
+0x04 ; Four Bytes per Data block
+0x00 0x00 0x00 0x01 ; This constant [INDEX: 15]
+0x00 0x00 0x00 0x0e ; Number: 14
+0x04 ; Four Bytes per Data block
+0x00 0x00 0x00 0x01 ; This constant [INDEX: 16]
+0x00 0x00 0x00 0x0f ; Number: 15
+0x04 ; Four Bytes per Data block
+0x00 0x00 0x00 0x01 ; This constant [INDEX: 17]
+0x00 0x00 0x00 0x10 ; Number: 16
 CONST_END
 0x00 0x01
-FUN_HEAD ; Index: 0
+FUN_HEAD
 0x00 0x01 ; 1 parameters.
-C_0 ; Hell , Index: 0
-S_0
-C_0 ; Hell , Index: 0
-S_1
-L_0 ; Variable Index: 0
-C_1 ; 0, Index: 1
-DGET
-S_2
-L_0 ; Variable Index: 0
-C_2 ; 1, Index: 2
-DGET
-S_3
-L_0 ; Variable Index: 0
-C_3 ; 2, Index: 3
-DGET
-S_4
-L_0 ; Variable Index: 0
-C_4 ; 3, Index: 4
-DGET
-S_5
-L_0 ; Variable Index: 0
-C_1 ; 0, Index: 1
-DGET
-S_B
-0x6
-L_0 ; Variable Index: 0
-C_2 ; 1, Index: 2
-DGET
-S_B
-0x7
-L_0 ; Variable Index: 0
-C_3 ; 2, Index: 3
-DGET
-S_B
-0x8
-L_0 ; Variable Index: 0
-C_4 ; 3, Index: 4
-DGET
-S_B
-0x9
-L_2 ; Variable Index: 2
-L_B
-0x6 ; Variable Index: 6
-EQ ; Equal To
-C_B
-0xd ; 23, Index: 13
-COMP
-L_3 ; Variable Index: 3
-L_B
-0x7 ; Variable Index: 7
-EQ ; Equal To
-C_B
-0xc ; 16, Index: 12
-COMP
-L_4 ; Variable Index: 4
-L_B
-0x8 ; Variable Index: 8
-EQ ; Equal To
-C_B
-0xa ; 9, Index: 10
-COMP
-L_5 ; Variable Index: 5
-L_B
-0x9 ; Variable Index: 9
-EQ ; Equal To
-C_3 ; 2, Index: 3
-COMP
-L_0 ; Variable Index: 0
-PUT_CHARS
+
+C_0 ; Hell , Index: 0            ; PC: 0
+S_0                              ; PC: 1
+
+L_0 ; Variable Index: 0          ; PC: 2
+
+C_1 ; 1, Index: 1                ; PC: 3
+DGET                             ; PC: 4
+S_1                              ; PC: 5
+
+L_1 ; Variable Index: 1          ; PC: 6
+
+C_2 ; 0, Index: 2                ; PC: 7
+DGET                             ; PC: 8
+S_2                              ; PC: 9
+
+L_2 ; Variable Index: 2          ; PC: 10
+
+C_2 ; 0, Index: 2                ; PC: 11
+DGET                             ; PC: 12
+S_3                              ; PC: 13
+
+L_3 ; Variable Index: 3          ; PC: 14
+
+C_2 ; 0, Index: 2                ; PC: 15
+DGET                             ; PC: 16
+S_4                              ; PC: 17
+
+L_4 ; Variable Index: 4          ; PC: 18
+
+C_2 ; 0, Index: 2                ; PC: 19
+DGET                             ; PC: 20
+S_5                              ; PC: 21
+
+L_5 ; Variable Index: 5          ; PC: 22
+
+C_2 ; 0, Index: 2                ; PC: 23
+DGET                             ; PC: 24
+S_B                              ; PC: 25
+0x06                             ; PC: 26
+
+L_B                              ; PC: 27
+0x06 ; Variable Index: 6         ; PC: 28
+
+C_2 ; 0, Index: 2                ; PC: 29
+DGET                             ; PC: 30
+S_B                              ; PC: 31
+0x07                             ; PC: 32
+
+L_B                              ; PC: 33
+0x07 ; Variable Index: 7         ; PC: 34
+
+C_2 ; 0, Index: 2                ; PC: 35
+DGET                             ; PC: 36
+S_B                              ; PC: 37
+0x08                             ; PC: 38
+
+L_B                              ; PC: 39
+0x08 ; Variable Index: 8         ; PC: 40
+
+C_2 ; 0, Index: 2                ; PC: 41
+DGET                             ; PC: 42
+S_B                              ; PC: 43
+0x09                             ; PC: 44
+
+L_B                              ; PC: 45
+0x09 ; Variable Index: 9         ; PC: 46
+
+C_2 ; 0, Index: 2                ; PC: 47
+DGET                             ; PC: 48
+S_B                              ; PC: 49
+0x0a                             ; PC: 50
+
+L_B                              ; PC: 51
+0x0a ; Variable Index: 10        ; PC: 52
+
+C_2 ; 0, Index: 2                ; PC: 53
+DGET                             ; PC: 54
+S_B                              ; PC: 55
+0x0b                             ; PC: 56
+
+L_B                              ; PC: 57
+0x0b ; Variable Index: 11        ; PC: 58
+
+C_2 ; 0, Index: 2                ; PC: 59
+DGET                             ; PC: 60
+S_B                              ; PC: 61
+0x0c                             ; PC: 62
+
+L_B                              ; PC: 63
+0x0c ; Variable Index: 12        ; PC: 64
+
+C_2 ; 0, Index: 2                ; PC: 65
+DGET                             ; PC: 66
+S_B                              ; PC: 67
+0x0d                             ; PC: 68
+
+L_B                              ; PC: 69
+0x0d ; Variable Index: 13        ; PC: 70
+
+C_2 ; 0, Index: 2                ; PC: 71
+DGET                             ; PC: 72
+S_B                              ; PC: 73
+0x0e                             ; PC: 74
+
+L_B                              ; PC: 75
+0x0e ; Variable Index: 14        ; PC: 76
+
+C_2 ; 0, Index: 2                ; PC: 77
+DGET                             ; PC: 78
+S_B                              ; PC: 79
+0x0f                             ; PC: 80
+
+L_0 ; Variable Index: 0          ; PC: 81
+PUT_CHARS                        ; PC: 82
+
+L_1 ; Variable Index: 1          ; PC: 83
+PUT_CHARS                        ; PC: 84
+
+L_2 ; Variable Index: 2          ; PC: 85
+PUT_CHARS                        ; PC: 86
+
+L_3 ; Variable Index: 3          ; PC: 87
+PUT_CHARS                        ; PC: 88
+
+L_4 ; Variable Index: 4          ; PC: 89
+PUT_CHARS                        ; PC: 90
+
+L_5 ; Variable Index: 5          ; PC: 91
+PUT_CHARS                        ; PC: 92
+
+L_B                              ; PC: 93
+0x06 ; Variable Index: 6         ; PC: 94
+PUT_CHARS                        ; PC: 95
+
+L_B                              ; PC: 96
+0x07 ; Variable Index: 7         ; PC: 97
+PUT_CHARS                        ; PC: 98
+
+L_B                              ; PC: 99
+0x08 ; Variable Index: 8         ; PC: 100
+PUT_CHARS                        ; PC: 101
+
+L_B                              ; PC: 102
+0x09 ; Variable Index: 9         ; PC: 103
+PUT_CHARS                        ; PC: 104
+
+L_2 ; Variable Index: 2          ; PC: 105
+PUT_CHARS                        ; PC: 106
+
+L_B                              ; PC: 107
+0x0a ; Variable Index: 10        ; PC: 108
+PUT_CHARS                        ; PC: 109
+
+L_B                              ; PC: 110
+0x0b ; Variable Index: 11        ; PC: 111
+PUT_CHARS                        ; PC: 112
+
+L_B                              ; PC: 113
+0x0c ; Variable Index: 12        ; PC: 114
+PUT_CHARS                        ; PC: 115
+
+L_B                              ; PC: 116
+0x0d ; Variable Index: 13        ; PC: 117
+PUT_CHARS                        ; PC: 118
+
+L_B                              ; PC: 119
+0x0e ; Variable Index: 14        ; PC: 120
+PUT_CHARS                        ; PC: 121
+
+L_B                              ; PC: 122
+0x0f ; Variable Index: 15        ; PC: 123
+PUT_CHARS                        ; PC: 124
+INSTR_END                        ; PC: 125
+

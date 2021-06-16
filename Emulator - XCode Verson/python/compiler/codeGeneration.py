@@ -20,7 +20,7 @@ commentWidth = 4 * " "
 def wrapInFunction(code: str, functionIndex: int) -> str:
     ## TODO: bytes from number gives it a 4 long hex, when it should be 2 long hex number.
     argumentsLen =  ' '.join(bytesFromNumber(len(functionData[functionIndex].paramTypes)).split()[2:])
-    return "\nFUN_HEAD" + " ; Index: " + str(functionIndex) + "\n" + argumentsLen + " ; " + str(len(functionData[functionIndex].paramTypes)) + " parameters.\n" + code + "\n"
+    return "\nFUN_HEAD" + " ; Index: " + str(functionIndex) + "\n" + argumentsLen + " ; " + str(len(functionData[functionIndex].paramTypes)) + " parameters.\n" + code + "\nINSTR_END\n"
 
 
 def createExpression(expression: list[Node]) -> str:
@@ -67,7 +67,7 @@ def createCall(node: Node) -> str:
         currentOutput += '\n' + specialFunctionData[node.name].assembly
     else:
         # get call index
-        currentOutput += '\n' + getString(node.name, "C_")  + " ; " + str(functions[node.name]) + ", Function Index: " + str(node.name)
+        currentOutput += '\n' + getString(constants.index(node.name), "C_")  + " ; " + str(functions[node.name]) + ", Function Index: " + str(node.name)
         # call the function
         currentOutput += '\n' + "CALL"
     return currentOutput
@@ -79,7 +79,11 @@ def getString(number: int, prefix: str) -> str:
         return prefix + str(number)
     else:
         # not sure if hex is the correct function, should work for now tho.
-        return prefix + "B" + "\n" + hex(number)
+        hexedNum = hex(number)
+        if len(hexedNum) < 4:
+            # fixes something 
+            hexedNum = "0x0" + hexedNum[2]
+        return prefix + "B" + "\n" + hexedNum
 
 def createVariableAssignment(node: Node) -> str:
     # the output for the expression
@@ -175,5 +179,34 @@ def createCode(node: Node, variables: list[str], functions: list[str], functionD
     # is below because more constants can be added (from if statements)
     constants = createConstants(constants)
     # - 1 i think for function count?
-    output = constants + str(' '.join(bytesFromNumber(functionCount).split()[2:])) + functionsOut
+
+
+
+    # get the longest line:
+    longestLine = 0
+    for i in functionsOut.splitlines():
+        if len(i) > longestLine:
+            longestLine = len(i)
+    codeOut = ""
+    index = 0
+    skipNext = False
+    for i in functionsOut.split('\n'):
+        i = i.strip()
+        if skipNext:
+            skipNext = False
+            codeOut += i + '\n'
+            continue
+        if len(i) > 0:
+            if i.startswith("FUN_HEAD"):
+                index = 0
+                codeOut += "FUN_HEAD\n"
+                skipNext = True
+                continue
+                
+            codeOut += i + ((longestLine + 8 - len(i)) * " ") + "; PC: " + str(index) + "\n"
+            index += 1
+        else:
+            codeOut += '\n'
+
+    output = constants + str(' '.join(bytesFromNumber(functionCount).split()[2:])) + codeOut
     return output

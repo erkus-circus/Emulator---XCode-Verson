@@ -1,25 +1,3 @@
 func main@int (argv@int) {
-   var a@string = "Hell ";
-   var b@string = "Hell ";
-   
-    var azero@inr = getIndex(a, 0);
-    var aone@inr = getIndex(a, 1);
-    var atwo@inr = getIndex(a, 2);
-    var athree@inr = getIndex(a, 3);
-
-
-    var bzero@inr = getIndex(a, 0);
-    var bone@inr = getIndex(a, 1);
-    var btwo@inr = getIndex(a, 2);
-    var bthree@inr = getIndex(a, 3);
-
-    if azero == bzero {
-        if aone == bone {
-            if atwo == btwo {
-                if athree == bthree {
-                    print(a);
-                }
-            }
-        }
-    }
+   print("Hello World!");
 }

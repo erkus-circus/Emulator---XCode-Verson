@@ -27,6 +27,5 @@ struct Vector
 {
     struct Data* arr;
     int size;
-    int offset;
 };
 #endif /* dataTypes_h */

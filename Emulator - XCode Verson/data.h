@@ -29,9 +29,14 @@ void init_data(struct Data* data, unsigned int size)
 struct Data create_data(int value)
 {
     struct Data data;
-    
+ 
     init_data(&data, 1);
     data.values[0] = value;
     return data;
+}
+
+void copy_data (struct Data* dest, struct Data* src) {
+    dest->size = src->size;
+    memcpy(dest->values, src->values, sizeof(*src->values));
 }
 #endif /* data_h */

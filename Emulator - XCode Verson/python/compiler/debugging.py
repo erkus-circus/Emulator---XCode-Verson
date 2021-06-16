@@ -1,7 +1,7 @@
 
 class DebugFlags:
     # show the end result bytecode
-    showBytecode = True
+    showBytecode = False
     # show the functions, variables, and constants lists:
     showConstantsLists = True
     # show the preprocessed AST

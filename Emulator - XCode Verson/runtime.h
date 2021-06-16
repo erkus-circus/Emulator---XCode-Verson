@@ -25,7 +25,7 @@ static int instructionsExecuted = 0;
 struct Data call(struct Function fn)
 {
 //    instructionsExecuted = 0;
-    s_init(&fn.stack, 8);
+    s_init(&fn.stack, 32);
     v_init(&fn.varArr);
     
     for (fn.PC = 0; fn.PC < fn.numIntructions; fn.PC++)
@@ -96,8 +96,6 @@ struct Data call(struct Function fn)
                 
                 s_push(&fn.stack, val);
                 
-                
-                
                 break;
             }
             case IMUL:
@@ -150,7 +148,7 @@ struct Data call(struct Function fn)
                 
                 s_push(&fn.stack, val);
                 
-                free_data(&val);
+                //free_data(&val);
                 break;
             }
                 
@@ -225,15 +223,17 @@ struct Data call(struct Function fn)
             case L_3:
                 s_push(&fn.stack, v_get(&fn.varArr, 3));
                 break;
+                
             case L_4:
                 s_push(&fn.stack, v_get(&fn.varArr, 4));
                 break;
+                
             case L_5:
                 s_push(&fn.stack, v_get(&fn.varArr, 5));
                 break;
                 
             case L_B:
-                s_push(&fn.stack, v_get(&fn.varArr, (int)++fn.PC));
+                s_push(&fn.stack, v_get(&fn.varArr, fn.intstructions[(int)++fn.PC]));
                 break;
             case L_S:
                 s_push(&fn.stack, v_get(&fn.varArr, ucharToShort(fn.intstructions + fn.PC + 1)));
@@ -266,9 +266,15 @@ struct Data call(struct Function fn)
                 break;
                 
             case S_B:
-                v_set(&fn.varArr, (int)++fn.PC, s_top(&fn.stack));
+            {
+                struct Data data = s_top(&fn.stack);
+                
+                v_set(&fn.varArr, fn.intstructions[(int)++fn.PC], data);
+                // HERE!!!?
                 s_pop(&fn.stack);
                 break;
+                
+            }
             case S_S:
                 v_set(&fn.varArr, ucharToShort(fn.intstructions + fn.PC + 1), s_top(&fn.stack));
                 s_pop(&fn.stack);
@@ -294,7 +300,7 @@ struct Data call(struct Function fn)
                 break;
                 
             case GL_B:
-                s_push(&fn.stack, v_get(&globalVars, (int)++fn.PC));
+                s_push(&fn.stack, v_get(&globalVars, fn.intstructions[(int)++fn.PC]));
                 break;
             case GL_S:
                 s_push(&fn.stack, v_get(&globalVars, ucharToShort(fn.intstructions + fn.PC + 1)));
@@ -389,7 +395,13 @@ struct Data call(struct Function fn)
             {
                 int index = s_top(&fn.stack).values[0];
                 s_pop(&fn.stack);
-                s_push(&fn.stack, create_data(s_top(&fn.stack).values[index]));
+                
+                int value = s_top(&fn.stack).values[index];
+                s_pop(&fn.stack);
+                
+                struct Data res = create_data(value);
+                
+                s_push(&fn.stack, res);
                 break;
             }
             case DSET:
@@ -429,7 +441,6 @@ struct Data call(struct Function fn)
             {
                 s_push(&fn.stack, create_data((int)s_top(&fn.stack).size));
             }
-                /// TODO: CHANGE ALL OF THESE TO JUST PUT A 1 OR ZERO ONTO THE STACK AFTER EVALUATING. THEN YOU CAN HAVE A JMP ONLY _IF_ THE TOP OF THE STACK SAYS TRUE. THIS IS SO MUCH MORE EFFICIENT
             case LT:
             {
                 // operator 1
@@ -569,6 +580,7 @@ struct Data call(struct Function fn)
                 break;
         } // end of switch
     }; // end of for loop
+    
     struct Data retVal;
     
     init_data(&retVal, 1);

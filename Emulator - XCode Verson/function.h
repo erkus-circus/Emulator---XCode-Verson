@@ -62,9 +62,6 @@ struct Function* functions = NULL;
 
 int setFunctions(unsigned char* file, int i)
 {
-
-    // TODO: for the looping
-    // TODO:
     int numFuncs;
     numFuncs = ucharToShort(file + i);
 
@@ -93,7 +90,7 @@ int setFunctions(unsigned char* file, int i)
 
         unsigned int numInstructions = (i-preInstr);
 
-        instructions = malloc( numInstructions * sizeof(unsigned char*) );
+        instructions = malloc( numInstructions * sizeof(unsigned char) );
         // memcpy(instructions, file + preInstr + 1, (i - preInstr - 1) * sizeof(unsigned char) );
         memcpy(instructions, file + preInstr, i - preInstr + 1);
 
@@ -115,6 +112,7 @@ int setFunctions(unsigned char* file, int i)
 
 void copy_function (struct Function* f1, struct Function* f2)
 {
+    // does this need to be here?
     // s_free(&f1->stack);
     f1->intstructions = f2->intstructions;
     f1->numIntructions = f2->numIntructions;

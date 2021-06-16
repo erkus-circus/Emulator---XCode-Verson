@@ -125,8 +125,14 @@ def parseFunctions(node: Node) -> None:
                     paramTypes=paramTypes, returnValue=i.type)
             # give the function an index
             i.name = len(functions) - 1
+        
+        parseFunctions(i)
+
+
+def parseCalls(node: Node):
+    for i in node.children:
         # parse a call node
-        elif i.nodeName == "call":
+        if i.nodeName == "call":
             if not i.name in functions and not i.name in specialFunctions:
                 print("undefined function call")
             elif i.name in specialFunctions:
@@ -135,7 +141,23 @@ def parseFunctions(node: Node) -> None:
                 i.special = True
             else:
                 i.name = functions.index(i.name)
-        parseFunctions(i)
+        parseCalls(i)
+
+    for i in node.arguments:
+        # parse a call node
+        if i.nodeName == "call":
+            if not i.name in functions and not i.name in specialFunctions:
+                print("undefined function call")
+            elif i.name in specialFunctions:
+                # this is a special function
+                i.name = specialFunctions.index(i.name)
+                i.special = True
+            else:
+                i.name = functions.index(i.name)
+        parseCalls(i)
+
+
+
 
 
 # parse a body for variable definitions. Make sure it is in the correct frame, might make a variable stack thing to do this
@@ -257,6 +279,7 @@ if __name__ == "__main__":
     parseVariables(ast)
     parseConstants(ast)
     parseFunctions(ast)
+    parseCalls(ast)
     ast.printAll()
     print("Constants: ", constants)
     print("Functions: ", functions)

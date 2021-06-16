@@ -58,6 +58,7 @@ class Node:
         output += getIfValue("TYPE: ", self.type)
         output += getIfValue("INITIALIZED: ", self.initialized)
         output += getIfValue("VALUE: ", self.value)
+        output += getIfValue("SPECIAL: ", self.special)
         print(output)
         for i in range(len(self.children)):
             self.children[i].printAll(spaces + 6)
@@ -527,7 +528,15 @@ def parseString(lexed: LexList) -> Node:
                 pass
 
         if terminated:
-            output += chars
+            if chars == "n":
+                # new line:
+                output += "\\n"
+            elif chars == "t":
+                # tab
+                output += "\\t"
+            else:
+                # everything else
+                output += chars
 
         elif lexed.getVal() == "\\":
             # an escape sequence

@@ -77,6 +77,8 @@ int main(int argc, char *argv[])
     // init the global variable vector:
     v_init(&globalVars);
     
-    return call(functions[0]).values[0];
-    
+    int retVal = call(functions[0]).values[0];
+    // remove this later:
+    printf("\n");
+    return retVal;
 }

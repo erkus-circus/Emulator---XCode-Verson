@@ -3,7 +3,7 @@ import sys
 import lexer
 import syntaxTree
 import codeGeneration
-from actionTree import parseConstants, parseFunctions,  parseVariables, parseBody, functions, constants, variables
+from actionTree import parseCalls, parseConstants, parseFunctions,  parseVariables, parseBody, functions, constants, variables
 import actionTree
 from debugging import DebugFlags
 
@@ -24,6 +24,7 @@ def build(inputProgram: str) -> str:
     parseConstants(ast)
     parseVariables(ast)
     parseFunctions(ast)
+    parseCalls(ast)
 
     if DebugFlags.showPostAST:
         print("================= POST PROCESSED AST ======================")

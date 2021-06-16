@@ -7,26 +7,21 @@
 
 void v_set (struct Vector* vector, int index, struct Data value)
 {
-    if (index + vector->offset >= vector->size) {
-        vector->arr = realloc(vector->arr, vector->size * 2);
+    if (index >= vector->size) {
+        vector->size *= 2;
+        vector->arr = realloc(vector->arr, vector->size * sizeof(struct Data));
     }
-    vector->arr[index + vector->offset] = value;
+    vector->arr[index] = value;
 }
 
 void v_init (struct Vector* vector)
 {
     vector->size = 8;
-    vector->offset = 0;
     vector->arr = malloc( vector->size * sizeof(struct Data) );
 }
 
 struct Data v_get(struct Vector* vector, int index)
 {
-    return vector->arr[index + vector->offset];
-}
-
-void v_concat(struct Vector* dest, struct Vector* src)
-{
-    memcpy(dest->arr,src->arr,src->size);
+    return vector->arr[index];
 }
 #endif // ARRAY_H_INCLUDED
