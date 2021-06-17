@@ -35,17 +35,6 @@
 #define RET '\x12'
 #define CALL '\x13'
 
-// load params into stack
-#define P_0 '\x14'
-#define P_1 '\x15'
-#define P_2 '\x16'
-#define P_3 '\x17'
-#define P_4 '\x18'
-#define P_5 '\x19'
-
-#define P_B '\x1a'
-#define P_S '\x1b'
-
 // load local variables
 #define L_0 '\x1c'
 #define L_1 '\x1d'
@@ -139,9 +128,6 @@
 // set PC to s_top
 #define JMP '\x40'
 
-// number to string:
-// this returns a null terminated string.
-#define ITOA '\x41'
 
 // string to number:
 // maybe i will add. Also maybe i will add c strings support.

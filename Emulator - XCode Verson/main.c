@@ -75,9 +75,18 @@ int main(int argc, char *argv[])
     // should probably free in here.
     
     // init the global variable vector:
-    v_init(&globalVars);
+    v_init(&globalVars, 1);
     
-    int retVal = call(functions[0]).values[0];
+    struct Function fnc;
+    copy_function(&fnc, &functions[0]);
+    
+    v_init(&fnc.varArr, fnc.paramCount);
+    for (int i = 0; i < fnc.paramCount; i++)
+    {
+        // TODO: assign argv values here
+    }
+    
+    int retVal = call(fnc).values[0];
     // remove this later:
     printf("\n");
     return retVal;

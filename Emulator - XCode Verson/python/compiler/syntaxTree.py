@@ -21,8 +21,6 @@ Each Parse function takes in at least a lexedList and returns a Node
 ## if it has already been included then fuck.
 includedTrees = []
 
-
-
 class Node:
     def __init__(self, name) -> None:
         # the name of node: string, body, if, func declaration, like statements
@@ -198,6 +196,7 @@ def parseID(lexed: LexList) -> Node:
         # parseCall is expecting the name of the ID
         lexed.stepDown()
         # return the call Node.
+        ### TODO: Check where lexed leaves this off,
         return parseCall(lexed)
 
     # parse an assignment
@@ -216,7 +215,7 @@ def parseID(lexed: LexList) -> Node:
         lexed.skipSpace(True)
         referenceNode = Node("reference")
         referenceNode.name = lexed.getVal()
-
+        ### TODO: check where lexed leave sthis off, relative to above.
         return referenceNode
 
     # TODO: return a Node
@@ -408,6 +407,11 @@ def parseExpression(lexed: LexList, ending: str, skip=False) -> Node:
 
         elif lexed.getType() == "ID":
             expressionTree.children.append(parseID(lexed))
+
+            # check if ID was a call, if so then stepback so operator can get called
+            if expressionTree.children[-1].nodeName == "call":
+                lexed.stepDown()
+
             # in an expression following a symbol you need an operator
             expectingOperator = True
             

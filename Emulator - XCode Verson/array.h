@@ -14,9 +14,9 @@ void v_set (struct Vector* vector, int index, struct Data value)
     vector->arr[index] = value;
 }
 
-void v_init (struct Vector* vector)
+void v_init (struct Vector* vector, int size)
 {
-    vector->size = 8;
+    vector->size = size;
     vector->arr = malloc( vector->size * sizeof(struct Data) );
 }
 

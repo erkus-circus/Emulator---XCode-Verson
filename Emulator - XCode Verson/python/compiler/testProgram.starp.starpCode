@@ -1,24 +1,50 @@
-0x00 0x00 0x00 0x02 ; 2 Constants:
+0x00 0x00 0x00 0x05 ; 5 Constants:
 0x04 ; Four Bytes per Data block
 0x00 0x00 0x00 0x01 ; This constant [INDEX: 0]
 0x00 0x00 0x00 0x00 ; Number: 0
 0x04 ; Four Bytes per Data block
 0x00 0x00 0x00 0x01 ; This constant [INDEX: 1]
 0x00 0x00 0x00 0x01 ; Number: 1
+0x04 ; Four Bytes per Data block
+0x00 0x00 0x00 0x01 ; This constant [INDEX: 2]
+0x00 0x00 0x00 0x7f ; Number: 127
+0x04 ; Four Bytes per Data block
+0x00 0x00 0x00 0x01 ; This constant [INDEX: 3]
+0x00 0x00 0x00 0x02 ; Number: 2
+0x04 ; Four Bytes per Data block
+0x00 0x00 0x00 0x01 ; This constant [INDEX: 4]
+0x00 0x00 0x00 0x08 ; Number: 8
 CONST_END
-0x00 0x01
+0x00 0x02
+FUN_HEAD
+0x00 0x00 ; 0 parameters.
+
+
+C_0 ; 0, Index: 0                       ; PC: 0
+C_1 ; recurse, Function Index: 1        ; PC: 1
+CALL                                    ; PC: 2
+RET                                     ; PC: 3
+INSTR_END                               ; PC: 4
+
 FUN_HEAD
 0x00 0x01 ; 1 parameters.
 
-C_0 ; 0, Index: 0                ; PC: 0
-S_0                              ; PC: 1
+L_0 ; Variable Index: 0                 ; PC: 0
+C_2 ; 127, Index: 2                     ; PC: 1
+LT ; Less Than                          ; PC: 2
+C_4 ; 8, Index: 4                       ; PC: 3
+COMP                                    ; PC: 4
 
-L_1 ; Variable Index: 1          ; PC: 2
-PUT_CHARS                        ; PC: 3
+L_0 ; Variable Index: 0                 ; PC: 5
+PUT_CHARS                               ; PC: 6
 
-L_0 ; Variable Index: 0          ; PC: 4
-PUT_CHARS                        ; PC: 5
-C_0 ; 0, Index: 0                ; PC: 6
-RET                              ; PC: 7
-INSTR_END                        ; PC: 8
+L_0 ; Variable Index: 0                 ; PC: 7
+C_1 ; 1, Index: 1                       ; PC: 8
+IADD ; Add                              ; PC: 9
+C_1 ; recurse, Function Index: 1        ; PC: 10
+CALL                                    ; PC: 11
+
+C_0 ; 0, Index: 0                       ; PC: 12
+RET                                     ; PC: 13
+INSTR_END                               ; PC: 14
 

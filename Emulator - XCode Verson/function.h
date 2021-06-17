@@ -45,7 +45,6 @@ int ucharFromByte(unsigned char* buf) {
 
 struct Function
 {
-    struct Data* params;
     unsigned int paramCount;
 
     struct Vector varArr;
@@ -117,7 +116,6 @@ void copy_function (struct Function* f1, struct Function* f2)
     f1->intstructions = f2->intstructions;
     f1->numIntructions = f2->numIntructions;
     f1->paramCount = f2->paramCount;
-    f1->params = f2->params;
     f1->PC = f2->PC;
     f1->stack = f2->stack;
 }

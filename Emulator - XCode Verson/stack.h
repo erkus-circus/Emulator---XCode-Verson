@@ -50,8 +50,7 @@ void s_init(struct Stack* stack, int size)
 struct Data s_top(struct Stack* stack)
 {
     if (s_empty(stack)) {
-        printf("STAC EMPYU AT TOP\n");
-        int i = 0;
+        //printf("STAC EMPYU AT TOP\n");
     }
     return stack->arr[stack->index];
 }

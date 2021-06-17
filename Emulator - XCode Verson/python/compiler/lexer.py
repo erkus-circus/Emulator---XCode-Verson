@@ -60,6 +60,13 @@ class LexList:
             return
         if self.getType() == "SPACE":
             self.stepUp(-1 if down else 1)
+        # check for comment type here
+        # then skip comment
+        if self.getType() == "EXPONENT":
+            while not '\n' in self.getVal():
+                self.stepUp()
+            # skip the last space
+            self.stepUp()
     
     # print out all of the lexed list
     def printOut(self):
@@ -80,7 +87,7 @@ class Types:
     ID = Type("ID", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", 1)
     STRSEP = Type("STRSEP", "\"`'")
     NUM = Type("NUM", "1234567890", 1)
-    SPACE = Type("SPACE", " \n", 1)
+    SPACE = Type("SPACE", " \n\t", 1)
     QMARK = Type("QMARK", "?")
     COMMA = Type("COMMA", ",")
     EXPOMARK = Type("EXPOMARK", "!")

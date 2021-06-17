@@ -43,21 +43,25 @@ specialFunctionData: list[Function] = [
     # input:
     Function([], "string", assembly="INPUT"),
     Function(["string", "string"], "string", assembly="DCPY"),
-    Function(["string", "int"], "string", assembly="DGET")
+    Function(["string", "int"], "string", assembly="DGET"),
+    # sleep:
+    Function(["int"], None, assembly="SLEEP")
 ]
 
 specialFunctions = [
     "print",
     "input",
     "strcpy",
-    "getIndex"
+    "getIndex",
+    "sleep"
 ]
 
 # constants is the list of all of the constants in the program. at the end it can generate from the constants generator or something.
 constants: list[str] = []
 
-# the output of the program:
-output = ""
+# an array of ints
+# each int is the total of variables and parameteres per function
+totalVariablesList: list[int] = []
 
 # loop through everything and extract the constants. Then assign the node to be have an index of the actual constant
 # TODO: make it so the most prevelant constants are used for C_0 through C_5, then the rest can be C_B,
@@ -102,6 +106,7 @@ def parseFunctions(node: Node) -> None:
     # loop through to get all function definitions. No repeat functions for at least now.
     for i in node.children:
         if i.nodeName == "function":
+            totalVariablesList.append(parseVariables(i, []))
             paramTypes = []
             if i.name in functions:
                 # error: function already defined
@@ -209,11 +214,11 @@ To make results come faster, i am going to inneficiently make variable indexes n
 anything after this is prob half-assed
 """
 
-variables: list[str] = []
-
 
 # varDeclaration if is being executed when it should not be. I dont know why. I am gojing to reboot the server right now to maybe get python stuff.
-def parseVariables(node: Node):
+def parseVariables(node: Node, variables: list[str]):
+    declared = 0
+
     # do variable declarations first, then references after because otherwise it does not work.
     for i in node.children:
         if i.nodeName == "varDeclaration":
@@ -229,11 +234,13 @@ def parseVariables(node: Node):
             variables.append(placeholderName)
             
 
-        parseVariables(i)
+        # parseVariables(i, variables)
 
     # do the same but with arguments.
     for i in node.arguments:
         if i.nodeName == "varDeclaration":
+            # this is for indexing when codeGeneration happens
+            declared += 1
             if i.name in variables:
                 # error already defined:
                 print("ALREADY DEFINED")
@@ -244,7 +251,7 @@ def parseVariables(node: Node):
             placeholderName = i.name
             i.name = len(variables)
             variables.append(placeholderName)
-        parseVariables(i)
+        declared += parseVariables(i, variables)
 
     for i in node.children:
         if i.nodeName == "reference":
@@ -263,7 +270,9 @@ def parseVariables(node: Node):
                 continue
             i.name = variables.index(i.name)
             pass
-        parseVariables(i)
+        declared += parseVariables(i, variables)
+    return declared
+    
 
 
 if __name__ == "__main__":
@@ -279,11 +288,10 @@ if __name__ == "__main__":
     """
     lexed = lex(inputs)
     ast = parseBody(lexed)
-    parseVariables(ast)
+    totalVariablesList.append(parseVariables(ast, []))
     parseConstants(ast)
     parseFunctions(ast)
     parseCalls(ast)
     ast.printAll()
     print("Constants: ", constants)
     print("Functions: ", functions)
-    print("Variables: ", variables)

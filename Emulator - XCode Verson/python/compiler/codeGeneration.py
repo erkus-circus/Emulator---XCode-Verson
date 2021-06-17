@@ -119,7 +119,7 @@ def createConstants(constants: list) -> str:
 
 # number of functions
 functionCount = 0
-## TODO variables are accessed in the variables array when they should be accessed from the parameters array. I need a fix to this.
+
 def createBody(node: Node) -> str:
     global functionCount
     # the current output, this will go into wrapFunction to turn it into a function before going into the output.
@@ -174,7 +174,7 @@ def createIf(node: Node):
     ifOutput += "\nCOMP\n" + ifBody[1:] + "\n"
     return ifOutput
 
-def createCode(node: Node, variables: list[str], functions: list[str], functionData: list[str], constants: list):
+def createCode(node: Node, functions: list[str], functionData: list[str], constants: list):
     functionsOut = createBody(node)
     # is below because more constants can be added (from if statements)
     constants = createConstants(constants)

@@ -26,7 +26,7 @@ struct Data call(struct Function fn)
 {
 //    instructionsExecuted = 0;
     s_init(&fn.stack, 32);
-    v_init(&fn.varArr);
+    // v_init is inited before
     
     for (fn.PC = 0; fn.PC < fn.numIntructions; fn.PC++)
     {
@@ -172,11 +172,10 @@ struct Data call(struct Function fn)
                 copy_function(&fnc, &functions[s_top(&fn.stack).values[0]]);
                 s_pop(&fn.stack);
                 
-                fnc.params = malloc(fnc.paramCount * sizeof(struct Data));
+                v_init(&fnc.varArr, fnc.paramCount);
                 for (int i = 0; i < fnc.paramCount; i++)
                 {
-                    
-                    fnc.params[i] = s_top(&fn.stack);
+                    v_set(&fnc.varArr, i, s_top(&fn.stack));
                     s_pop(&fn.stack);
                 }
                 
@@ -184,32 +183,6 @@ struct Data call(struct Function fn)
                 
                 break;
             }
-                
-            case P_0:
-                s_push(&fn.stack, fn.params[0]);
-                break;
-            case P_1:
-                s_push(&fn.stack, fn.params[1]);
-                break;
-            case P_2:
-                s_push(&fn.stack, fn.params[2]);
-                break;
-            case P_3:
-                s_push(&fn.stack, fn.params[3]);
-                break;
-            case P_4:
-                s_push(&fn.stack, fn.params[4]);
-                break;
-            case P_5:
-                s_push(&fn.stack, fn.params[5]);
-                break;
-            case P_B:
-                s_push(&fn.stack, fn.params[(int)++fn.PC]);
-                break;
-            case P_S:
-                s_push(&fn.stack, fn.params[ucharToShort(fn.intstructions + fn.PC + 1)]);
-                fn.PC += 2;
-                break;
                 
             case L_0:
                 s_push(&fn.stack, v_get(&fn.varArr, 0));
